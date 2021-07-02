@@ -1,183 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>五宙坐标</title>
-<link href="./wufiles/app.min.css" rel="stylesheet">
-<link rel="stylesheet" href="./wufiles/fonts/font-awesome.min.css">
-
-<svg xmlns="http://www.w3.org/2000/svg" display="none"><symbol id="ico_close" viewBox="0 0 60 60"><circle cx="30" cy="30" r="30" fill="#000" opacity="0.4" /><path d="M15,16L45,46 M45,16L15,46" stroke="#000" stroke-width="3.5" opacity="0.5" /><path d="M15,15L45,45 M45,15L15,45" stroke="#fff" stroke-width="2" /></symbol></svg>
-<script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?7331184a3c570641dee9ef87b68c54be";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script>
-</head>
-<body>
-
-<div id="fullPage" class="show-a" style="height: 913px;">
-
-    <div id="sideNav" class="side-nav side-nav-0">
-        <ul class="side-nav-ul">
-            <li class="side-nav-item side-nav-item-cur"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-home"></i>首页</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-newspaper-o"></i>新闻</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-book"></i>知识</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-picture-o"></i>图片</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-film"></i>影视</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-gamepad"></i>游戏</a></li>
-            <li class="side-nav-item"><a href="javascript:;" hidefocus="ture"><i class="s-icon fa-bug"></i>关于</a></li>
-        </ul>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width">   
+    <title>五宙坐标</title>
+    <meta name="keywords" content="单文件exe,实用小软件,背单词,英语资料,mp3资料,小学英语,资源下载" />
+    <meta name="description" content="本站为了方便大家找到自己想要下载的资源。" />    
+    <link rel="shortcut icon" href="./wufiles/favicon.ico">
+    <link href="./wufiles/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="./wufiles/fonts/font-awesome.min.css">
+    <script data-ad-client="ca-pub-5414095334113187" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?7331184a3c570641dee9ef87b68c54be";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script>
+  </head>
+  <body>
+				<div id="home"></div>
+				<div id="tooltip" class="hidden"><p><span id="tooltip_value"></span></p></div>
+    <div class="wrapper">
+   
+		 
     </div>
-    
-    <div id="scroller" style="top: 0px;">
-    
-        <div class="section screen" id="a" style="height: 950px;">
-            <div class="layer bg bg-a" data-z="10"></div>
-            <canvas id="Star_Canvas" class="flashstar"></canvas>
-            
-            <div class="layer z8 dbx esports-title" data-z="2">
-                <p class="ch">五宙坐标</p>
-                <p class="en-1">WUZHOU</p>
-                <p class="en-2">XYZ</p>
-            </div>
-                       
-				<div id="home-fly">
-					<div id="fly-1">
-						<div class="fly-real"></div>
-						<div class="fire-1"></div>
-	    				<div class="fire-2"></div>
-					</div>
-				
-					<div id="fly-2">
-							<div class="fly-real"></div>
-							<div class="fire-1"></div>
-		    				<div class="fire-2"></div>
-					</div>
-
-					<div id="fly-3">
-							<div class="fly-real"></div>
-							<div class="fire-1"></div>
-		    				<div class="fire-2"></div>
-					</div>
-			
-				</div>
-
-        </div>
-        
-        <div class="section screen" id="b" style="height: 756px;">
-
-            <div class="layer z9 dbx esports-title" data-z="2">
-                <p class="ch">地球新闻</p>
-                <p class="en-1">EARTH</p>
-                <p class="en-2">NEWS</p>
-            </div>
-
-            <p class="layer z1 s-desc game-desc" data-z="5">专注于提供新宇宙方面最新最新闻、新宇宙资讯及新宇宙报道。向宇宙以及天文爱好者提供最新的资讯和最新宇宙探索发现。
-            <span class="s-link"><a href="javascript:OpenWUInfo('news_1','news_colse')">接收新闻 &gt;&gt;</a></span></p>
-
-            <svg id="news_colse" class="layer z6 lx-3" onClick="javascript:CloseWUInfo('news_1','news_colse')"><use xlink:href="#ico_close"></use></svg>
- 						<object id="news_1" class="layer z7 news" data="./data/news.html"></object>
-        </div>
-        
-        <div class="section screen" id="c" style="height: 756px;">
-            <div class="layer bg bg-c" data-z="9"></div>
-            <div class="layer z9 dbx esports-title" data-z="2">
-                <p class="ch">星球知识</p>
-                <p class="en-1">PLANETARY</p>
-                <p class="en-2">KNOWLEDGE</p>
-            </div>
-            
-            <p class="layer z1 s-desc comic-desc" data-z="5">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。恒星由炽热气体组成的，能自己发光的球状或类球状天体。离地球最近的恒星是太阳，其次是半人马座比邻星。
-            <span class="s-link"><a href="javascript:OpenWUInfo('pk_1','pk_colse')">开始学习 &gt;&gt;</a></span></p>
-            <span class="layer z8 circle1" data-z="2"></span>
-            <svg id="pk_colse" class="layer z6 lx-3" onClick="javascript:CloseWUInfo('pk_1','pk_colse')"><use xlink:href="#ico_close"></use></svg>
-            <object id="pk_1" class="layer z7 news" data="./data/hk.html"></object>
-        </div>
-        
-        <div class="section screen" id="d" style="height: 812px;">
-
-            <div class="layer z9 dbx esports-title" data-z="9">
-                <p class="ch">科幻图片</p>
-                <p class="en-1">Pictures</p>
-                <p class="en-2">Science</p>
-            </div>
-
-            <p class="layer z1 s-desc comic-desc" data-z="2">我们前所未有地生活在一个科幻的世界里，随着人工智能、大数据、基因工程以及社会工程新技术的高速发展，人之为人和道德标准的传统定义受到挑战并遭到抛弃。
-            </p>
-
-<div class="cpic" data-z="9">
-<div class="main">
-  <div class="mainBoxes fs"></div>
-  <div class="mainClose"><svg class="mainClose"><use xlink:href="#ico_close"></use></svg>
-  </div>
-</div>
-</div>
-        </div>
-        
-        <div class="section screen" id="e" style="height: 756px;">
-
-            <div class="film-home-kv layer bg z-11 bg-e" data-z="9"></div>
-            <div class="layer z8 dbx esports-title" data-z="2">
-                <p class="ch">科幻电影</p>
-                <p class="en-1">Science</p>
-                <p class="en-2">Fiction Film</p>
-            </div>
-
-            <p class="layer z1 s-desc film-desc" data-z="5">以科学幻想为内容的故事片，其基本特点是从今天已知的科学原理和科学成就出发，对未来的世界或遥远的过去的情景作幻想式的描述。许多科幻电影会表现出对于政治或社会议题的关注，以及哲学方面如人类处境的探讨。一些科幻电影是从科幻文学作品改编而成，但科幻电影会注重撷取其中的文学或人文方面的元素，而无视科幻文学比较注重的科学严谨性和逻辑性，两者不可相提并论，同样的标准不能同时适用于科幻小说和科幻片。
-            <span class="s-link"><a href="javascript:OpenWUInfo('film_1','film_colse')">详细了解 &gt;&gt;</a></span></p>
-            <svg id="film_colse" class="layer z6 lx-3" onClick="javascript:CloseWUInfo('film_1','film_colse')"><use xlink:href="#ico_close"></use></svg>
-            <object id="film_1" class="layer z7 films" data="./films/film.html"></object>
-        </div>
-        
-        <div class="section screen" id="f" style="height: 756px;">
-
-            <div class="layer bg z-11 bg-f" data-z="9"></div>
-
-            <div class="layer z8 dbx esports-title" data-z="9" width="678" height="143">
-                <p class="ch">科幻游戏</p>
-                <p class="en-1">GAME</p>
-                <p class="en-2">PLAY</p>
-            </div>
-
-            <p class="layer z1 s-desc film-desc" data-z="5">科幻题材可以不受现实的局限，自由的想象发挥，所造就的是让玩家们惊叹的一个又一个脑洞，这样的惊喜才使得很多玩家对科幻游戏情有独钟。游戏有很多个结局，越玩到后面虽然会让人更难受，但是也更加让人感受到游戏的魅力所在。</p>
-       
-        </div>
-        
-        <div class="section screen" id="g" style="height: 756px;">
-            <div class="layer bg bg-g" data-z="10"></div>
-            <div class="layer z8 dbx copy-title" data-z="9">
-                <p class="ch">关于本站</p>
-                <p class="en-1">ABOUT</p>
-                <p class="en-2">US</p>
-            </div>            
-            <p class="layer z1 s-desc" data-z="5">
-本网站所收集的部分公开资料来源于互联网，转载的目的在于传递更多信息及用于网络分享，并不代表本站赞同其观点和对其真实性负责，也不构成任何其他建议。如果您发现网站上有侵犯您的知识产权的作品，请与我们取得联系，我们会及时修改或删除。
-本网站所提供的信息，只供参考之用。本网站不保证信息的准确性、有效性、及时性和完整性。
-本声明未涉及的问题参见国家有关法律法规，当本声明与国家法律法规冲突时，以国家法律法规为准。</p>
-        
-                     <div id="bottom-fly">
-                        <div id="bottom-fly-x"></div>
-
-                        <div id="bfly-1">
-                                <div class="fire-1"></div>
-                                <div class="fire-2"></div>
-                        </div>
-
-                        <div id="bfly-2">
-                                <div class="fire-1"></div>
-                                <div class="fire-2"></div>
-                        </div>
-
-                        <div id="bfly-3">
-                                <div class="fire-1"></div>
-                                <div class="fire-2"></div>
-                        </div>
-
-                    </div>                 
-        </div>
-               
-    </div>
-    
-    <div id="footer" style="display: block;">
-        
-  <p>Copyright &#169; 2021 – <script>document.write((new Date()).getFullYear());</script> WUZHOU.XYZ  
+  
+  <div id="footer" style="display: block;">    
+  <p>&#169;<script>document.write((new Date()).getFullYear());</script> <a href="https://wuzhou.xyz/">WUZHOU.XYZ</a>
   <span class="copyright-r">
                         <a class="weixin" href="javascript:" title="Weixin">
                             <span class="fa-stack fa-lg">
@@ -200,10 +45,10 @@
                             </span>
                         </a>
 
-                        <a class="facebook" target="_blank" href="https://www.facebook.com/" title="Facebook">
+                        <a class="comments" target="_blank" href="#" title="comments">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                <i class="fa fa-comments-o fa-stack-1x fa-inverse"></i>
                             </span>
                         </a>
 
@@ -215,19 +60,13 @@
                         </a>                       
                         </span></p>
 
-    </div>
-    
-    <span class="layer z1 arrow-down" data-z="2" title="向下滚动查看更多"></span>
-    <span class="layer z1 arrow-up" data-z="2" title="向上滚动查看更多"></span>
-</div>
-
-<script type="text/javascript" src="./wufiles/js/jquery-1.7.1.min.js"></script>
-<script src="./wufiles/js/app.min.js"></script>
-<script type="text/javascript" src="./wufiles/js/gsap.min.js"></script>
-<script type="text/javascript" src="./wufiles/js/pic.js"></script>
-<script type="text/javascript" src="./wufiles/js/fly.js"></script>
-<script type="text/javascript" src="./wufiles/js/flare.js"></script>
-
-
-
-</body></html>
+    </div>    
+  <script type="text/javascript" src="./wufiles/js/content.js"></script>
+ 
+  <script type="text/javascript" src="./wufiles/js/d3.v3.min.js"></script>
+  <script type="text/javascript" src="./wufiles/js/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="./wufiles/js/tag.js"></script>  
+  <script type="text/javascript" src="./wufiles/js/wz.js"></script>  
+   
+ </body>
+</html>
