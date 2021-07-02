@@ -111,20 +111,28 @@ var homejson = [{"links": [
 ];
 //var width = 700,height = 700;
 
-function d3tags(id){
+(function($){
+var id = 0;
+var pid = ["#home","#about"];
+
+var obj = document.getElementById('about');
+	if(obj){id = 1;}
+	else
+	{obj = document.getElementById('home');}
+	if(!obj) return;
+		
+//if($("#home").length>0){}else{}
 
 var jsondata = homejson[id];
 
-var o = document.getElementById('home');
-	if(!o)return;
-var width = o.clientWidth||o.offsetWidth;
+var width = obj.clientWidth||obj.offsetWidth;
 var height= document.documentElement.clientHeight-100;//document.body.clientHeight;
 //var height = document.getElementById("tags").offsetHeight;
 //var width = document.getElementById("tags").offsetWidth; 
 
 var color = d3.scale.category10();//10种颜色
 var force = d3.layout.force().linkDistance(width/10).linkStrength(1).charge(-width/3).size([width, height]);
-var svg = d3.select("#home").append("svg").attr("width", width).attr("height", height);
+var svg = d3.select(pid[id]).append("svg").attr("width", width).attr("height", height);
 //自动缩放//x坐标点起始位置，y坐标点起始位置，视图宽度，视图高度
 //var svg = d3.select("#home").append("svg").attr("preserveAspectRatio", "xMidYMid meet").attr("viewBox", '0 0 '+width+' '+height);
 // 背景
@@ -243,14 +251,16 @@ node.on("mouseout", function(d){
     d3.select(this).attr("r", 6).style("fill", "Black"); 
 }); 
 
-}
+})(jQuery);
 
 function Hometree(id){
 	//d3.select('svg').selectAll('*').remove();
 	d3.select('svg').remove();
 	d3tags(id);
 }
+/*
 if(RegExp(/index/).test(window.location.href))
 d3tags(0);
 if(RegExp(/about/).test(window.location.href))
 d3tags(1);
+*/
