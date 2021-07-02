@@ -177,7 +177,9 @@ section {
   {
 	 display: none;
   }
-		
+.copyright-r{
+	margin-right: 10px;
+}		
 	#top-bar.is-fixed {
 		padding-top: 15px;
 		padding-bottom: 15px;
@@ -364,7 +366,7 @@ color:#808080;
 }
 .copyright-r{
 	float: right;
-	margin-right: 10px;
+
 	margin-top: -10px;
 }
 a.email:hover{color:#FF8000}
