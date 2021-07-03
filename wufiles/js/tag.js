@@ -224,7 +224,7 @@ force.on("tick", function() {
                 });
                 node.attr("transform",function(d) {
                            //x轴 超过宽度回弹
-                        if (d.x > width-50) d.x -= 50;
+                        if (d.x > width-50) d.x = width-50;
                           //y轴 超过高度回弹
                         if (d.y > height-50) d.y -= 50;
                         if (d.x < 50) d.x = 50;
