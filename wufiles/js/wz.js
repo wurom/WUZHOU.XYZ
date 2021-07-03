@@ -236,7 +236,7 @@ function conlist(){
         var newUL1 = document.createElement('ul');
         newUL1.className = "topnav";
         //content.innerHTML = '<ul class="topnav">';      
-        //newUL1.innerHTML += '<li><a href="../index.html"><i class="fa fa-home"></i> 五宙坐标</a></li>'; 
+        //newUL1.innerHTML += '<li><a href="../index.html"><i class="fa fa-home"></i> 伍洲坐标</a></li>'; 
         for(var z=0;z<labels.length;z++){
 
         	var newUL2 = document.createElement('ul');
@@ -253,7 +253,7 @@ function conlist(){
         	 var newLI = document.createElement('li');
         	          
            if(num > 0){
-           	newLI.innerHTML += '<a href="javascript:;">'+labels[z].label+'『'+num+'』</a>'; 
+           	newLI.innerHTML += '<a href="javascript:;">'+labels[z].label+'『 '+num+' 』</a>'; 
             newLI.appendChild(newUL2);
            }
            else
