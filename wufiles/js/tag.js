@@ -224,11 +224,11 @@ force.on("tick", function() {
                 });
                 node.attr("transform",function(d) {
                            //x轴 超过宽度回弹
-                        if (d.x > width-50) d.x = width-50;
+                        if (d.x > width-50) d.x = 2*width-d.x-50;
                           //y轴 超过高度回弹
-                        if (d.y > height-50) d.y = height-50;
-                        if (d.x < 30) d.x = 30;
-                        if (d.y < 30) d.y = 30;
+                        if (d.y > height-20) d.y = 2*height-d.y-20;
+                        if (d.x < 20) d.x = 20;
+                        if (d.y < 20) d.y = 20;
                 	
                   return "translate(" + d.x + "," + d.y + ")";
                 });
