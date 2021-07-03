@@ -226,9 +226,9 @@ force.on("tick", function() {
                            //x轴 超过宽度回弹
                         if (d.x > width-50) d.x = width-50;
                           //y轴 超过高度回弹
-                        if (d.y > height-50) d.y -= 50;
-                        if (d.x < 50) d.x = 50;
-                        if (d.y < 50) d.y = 50;
+                        if (d.y > height-50) d.y = height-50;
+                        if (d.x < 30) d.x = 30;
+                        if (d.y < 30) d.y = 30;
                 	
                   return "translate(" + d.x + "," + d.y + ")";
                 });
