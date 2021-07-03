@@ -28,7 +28,7 @@ var homejson = [{"links": [
 	{"source": "3","target": "13","value": "3"}],
 	
 	"nodes": [
-	{"count": 15,"id": "0","name": "五宙坐标","url": "index.html","sym":"&#xf015"},
+	{"count": 15,"id": "0","name": "伍洲坐标","url": "index.html","sym":"&#xf015"},
 	{"count": 13,"id": "1","name": "软件","url": "javascript:zopen(1);","sym":"&#xf188"},
 	{"count": 14,"id": "2","name": "无线电","url": "javascript:zopen(2);","sym":"&#xf2ce"},
 	{"count": 13,"id": "3","name": "单片机","url": "javascript:zopen(3);","sym":"&#xf2db"},//3
@@ -106,7 +106,7 @@ var homejson = [{"links": [
 	{"count": 6,"group": "2","name": "JavaScript","url": "#15"},
 	{"count": 6,"group": "2","name": "Android","url": "#16"},
 	{"count": 6,"group": "2","name": "Arm"},
-	{"count": 14,"group": "2","name": "五宙坐标","url": "index.html","sym":"&#xf015"}]
+	{"count": 14,"group": "2","name": "伍洲坐标","url": "index.html","sym":"&#xf015"}]
 }
 ];
 //var width = 700,height = 700;
