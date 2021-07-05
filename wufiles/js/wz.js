@@ -109,7 +109,7 @@ function zopen(id){
 	      
 	      //if(op==null)return;
         for(var i=0;i< datalist.length;i++){
-            if(datalist[i].label.indexOf(id)){
+            if(datalist[i].label.indexOf(id) > -1){
             sessionStorage["tag1"]="tip"+datalist[i].id;
             window.location.href = './'+datalist[i].url;
             break;
@@ -193,7 +193,7 @@ $(document).ready(function() {
 $(function(){
 $("li").click(function (e){
 	var val=e.target.id;
-	if(val.includes("tip"))
+	if(val.indexOf("tip") > -1)
 	sessionStorage["tag1"]=val;
 	//console.log(val);
 	})
@@ -241,7 +241,7 @@ function conlist(){
         	var newUL2 = document.createElement('ul');
           var num = 0;
           for(var i=0;i< datalist.length;i++){
-            if(datalist[i].label.includes(labels[z].id)){
+            if(datalist[i].label.indexOf(labels[z].id) > -1){
             var tip = "tip"+datalist[i].id;
             var cs  = (tag==tip)?'<li class="active">':'<li>';
             newUL2.innerHTML += cs+'<a id="'+tip+'" href="../'+datalist[i].url+'">'+datalist[i].title+'</a></li>';
