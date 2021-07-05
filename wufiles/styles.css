@@ -139,6 +139,10 @@ hr {
   margin:20px 0 20px;
 }
 
+.ent{
+white-space: pre-wrap;
+}
+
 footer {
   width:200px;
   float:left;
