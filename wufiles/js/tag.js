@@ -94,7 +94,7 @@ var homejson = [{"links": [
 	{"count": 7,"group": "2","name": "domeyes.com","title":"度蜜约","url": "#7"}, 
 	{"count": 7,"group": "2","name": "wuroom.com","title":"五维空间,正在使用域名","url": "#7"}, 
 	{"count": 7,"group": "2","name": "wurom.com","title":"物联网","url": "#7"}, 
-	{"count": 7,"group": "2","name": "wuzhou.xyz","title":"五宙坐标,正在使用域名","url": "index.html"}, 
+	{"count": 7,"group": "2","name": "wuzhou.xyz","title":"伍洲坐标,正在使用域名","url": "index.html"}, 
 		
 	{"count": 8,"group": "2","name": "博客","url": "#8"},
 	{"count": 9,"group": "1","name": "编程","url": "javascript:zopen(8);"},
@@ -126,7 +126,7 @@ var obj = document.getElementById('about');
 var jsondata = homejson[id];
 
 var width = obj.clientWidth||obj.offsetWidth;
-var height= document.documentElement.clientHeight-100;//document.body.clientHeight;
+var height= document.documentElement.clientHeight-65;//document.body.clientHeight;
 //var height = document.getElementById("tags").offsetHeight;
 //var width = document.getElementById("tags").offsetWidth; 
 
