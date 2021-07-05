@@ -136,7 +136,7 @@ hr {
   border:0;
   background:#e5e5e5;
   height:1px;
-  margin:0 0 20px;
+  margin:20px 0 20px;
 }
 
 footer {
@@ -251,9 +251,8 @@ section {
 .entry-content a{border-bottom:0px dashed #CCC}
 .entry-content a:hover{border-bottom:0px dashed #424242;color:#FF8000;text-decoration:none}
 
-
 .post-title{color:#424242}.post-title:hover{color:#424242}.post-title-r{color:#424242;float:right}
-.post-meta{font-size:14px;color:#000;padding:7px 0px;margin-bottom:20px;margin-top:10px;border-top:1px dashed #c2c2c2;border-bottom:1px dashed #c2c2c2}
+.post-meta{color:#000;padding:7px 0px;margin-bottom:20px;margin-top:10px;border-top:1px dashed #c2c2c2;border-bottom:1px dashed #c2c2c2}
 
 .eye-r{color:#808080;float:right}
 .eye-hand{cursor:pointer;}
