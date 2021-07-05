@@ -108,9 +108,8 @@ function GetQueryString(name)
 function zopen(id){
 	      
 	      //if(op==null)return;
-	
         for(var i=0;i< datalist.length;i++){
-            if(datalist[i].label.includes(id)){
+            if(datalist[i].label.indexOf(id)){
             sessionStorage["tag1"]="tip"+datalist[i].id;
             window.location.href = './'+datalist[i].url;
             break;
