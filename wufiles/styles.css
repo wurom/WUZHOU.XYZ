@@ -40,7 +40,7 @@ h3, h4, h5, h6 {
 }
 
 a {
-  color:#000;
+  color:#393939;
   text-decoration:none;
 }
 
@@ -148,7 +148,7 @@ footer {
   -webkit-font-smoothing:subpixel-antialiased;
 }
 
-/*¿í¶È´óÓÚ992px*/
+/*å®½åº¦å¤§äº992px*/
 @media (min-width: 992px) {
 section {
 	padding: 30px;
@@ -186,12 +186,12 @@ section {
 	}
 	
 }
-/*¿í¶È´óÓÚ960px*/
+/*å®½åº¦å¤§äº960px*/
 @media (min-width: 960px) {
 .entry{padding:20px;}
 }
 
-/*Ò³ÃæĞ¡ÓÚ991pxµÄÊ±ºòÖ´ĞĞ*/
+/*é¡µé¢å°äº991pxçš„æ—¶å€™æ‰§è¡Œ*/
 @media print, screen and (max-width: 991px) {
 
   div.wrapper {
@@ -218,7 +218,7 @@ section {
 }
 
 }
-/*Ò³ÃæĞ¡ÓÚ720pxµÄÊ±ºòÖ´ĞĞ*/
+/*é¡µé¢å°äº720pxçš„æ—¶å€™æ‰§è¡Œ*/
 @media print, screen and (max-width: 720px) {
   body {
     word-wrap:break-word;
@@ -376,7 +376,7 @@ a.telegram:hover{color: #2796D1}
 a.weixin:hover{color: #16D46B}
 a.weibo:hover{color: #DF0000}
 a.linkedin:hover{color: #2796D1}
-/*Î¢ĞÅ¶şÎ¬Âë*/
+/*å¾®ä¿¡äºŒç»´ç */
 .weixin{
 position:relative;
 }
