@@ -291,7 +291,7 @@ function Homelist(id,list){
 
             newDiv.innerHTML = '<h1><a class="post-title" href="'+datalist[i].url+'" rel="bookmark">'+datalist[i].title+'</a></h1>'+            
                                 '<div class="post-meta"><i class="fa fa-calendar" aria-hidden="true"></i> '+datalist[i].time+
-                                ' <i class="fa fa-link"></i> <a class="post-title" href="'+datalist[i].url+'">Read more???...</a></div>'+
+                                ' <i class="fa fa-link"></i> <a class="post-title" href="'+datalist[i].url+'">Read more ...</a></div>'+
                                 '<div class="clear"></div><div class="entry-content"><a href="'+datalist[i].url+'" rel="tag">'+
                                 '<img src="./file/'+datalist[i].pic+'" class="thumb" /></a>'+datalist[i].resume+
                                 '</div></div>';
