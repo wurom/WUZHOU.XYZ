@@ -219,7 +219,7 @@ function conlist(){
 		  '<h1 class="site-logo"><a href="../index.html"><i class="fa fa-home"></i> 伍洲坐标</a></h1>'+
       '<span id="home-ico">'+
       '<a class="weibo" target="_blank" href="https://weibo.com/" title="Weibo"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-weibo fa-stack-1x fa-inverse"></i></span></a>'+
-      '<a class="linkedin" target="_blank" href="https://www.linkedin.com/" title="Linkedin"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-linkedin-square fa-stack-1x fa-inverse"></i></span></a>'+
+      '<a class="linkedin" target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=rWevTE6OSej3ZNDJCQ1skVTJ8tcOXem6&jump_from=webapi" title="QQ"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-qq fa-stack-1x fa-inverse"></i></span></a>'+
       '<a class="comments" target="_blank" href="#" title="comments"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-comments-o fa-stack-1x fa-inverse"></i></span></a>'+
       '<a class="email" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=bxcWFS8YGhUHABpBFxYV" title="Email"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-envelope fa-stack-1x fa-inverse"></i></span></a>'+
       '</span></div><a id="top-bar__navigation-toggler" href="javascript:void(0);"><span></span></a>';
