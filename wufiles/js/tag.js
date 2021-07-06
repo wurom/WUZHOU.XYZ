@@ -57,58 +57,59 @@ var homejson = [{"links": [
 	{"source": "3","target": "7","value": "3"},	
 	{"source": "6","target": "8","value": "6"},
 	{"source": "6","target": "9","value": "6"},	
-  {"source": "2","target": "16","value": "2"},
+  {"source": "2","target": "17","value": "2"},
 	
 	{"source": "7","target": "8","value": "1"},
 	{"source": "7","target": "9","value": "1"},
 	{"source": "7","target": "10","value": "1"},
 	{"source": "7","target": "11","value": "1"},
-	{"source": "7","target": "12","value": "1"},
-	{"source": "7","target": "13","value": "2"},	
+	{"source": "7","target": "12","value": "2"},
+	{"source": "7","target": "13","value": "1"},	
 	{"source": "7","target": "14","value": "2"},
 	{"source": "12","target": "15","value": "12"},
-	{"source": "14","target": "25","value": "14"},
+	{"source": "14","target": "16","value": "14"},
 		
-	{"source": "16","target": "17","value": "2"},
-	{"source": "16","target": "18","value": "2"},
-	{"source": "16","target": "19","value": "2"},
-	{"source": "16","target": "20","value": "3"},
-	{"source": "16","target": "21","value": "3"},
-	{"source": "16","target": "22","value": "3"},
-	{"source": "16","target": "23","value": "3"},
-	{"source": "16","target": "24","value": "3"}],
+	{"source": "17","target": "18","value": "3"},
+	{"source": "17","target": "19","value": "3"},
+	{"source": "17","target": "20","value": "3"},
+	{"source": "17","target": "21","value": "3"},
+	{"source": "17","target": "22","value": "3"},
+	{"source": "17","target": "23","value": "3"},
+	{"source": "17","target": "24","value": "3"},
+	{"source": "17","target": "25","value": "3"},
+	{"source": "17","target": "26","value": "3"}],
 	
 	"nodes": [
-	{"count": 8,"group": "0","name": "接触电脑","title":" 高中练习五笔首次接触电脑","url": "javascript:;"},
+	{"count": 9,"group": "0","name": "接触电脑","title":" 高中练习五笔首次接触电脑","url": "javascript:;"},
 	{"count": 8,"group": "1","name": "安装系统","title":"1998年练习安装电脑系统"},
 	{"count": 8,"group": "2","name": "电脑","title":"2000年组装自己的第一台电脑","url": "javascript:;"},
-	{"count": 9,"group": "3","name": "上网","title":"2001年申请了ADSL宽带上网","url": "javascript:;"},//3
-	{"count": 8,"group": "5","name": "BBS论坛","title":"在自己电脑上用花生壳建立了雷傲论坛","url": "javascript:;"},
-	{"count": 5,"group": "2","name": "免费空间","title":"使用过的免费空间sam35.y365.com sam35.8u8.com","url": "#2"}, 
-	{"count": 7,"group": "4","name": "午夜的猫","title":"2002建立的第一真正的网上论坛,启用国际域名www.t5y6.com","url": "javascript:;"}, 
+	{"count": 9,"group": "3","name": "上网","title":"2001年申请了ADSL宽带上网","url": "javascript:;"},
+	{"count": 8,"group": "4","name": "BBS论坛","title":"在自己电脑上用花生壳建立了雷傲论坛","url": "javascript:;"},
+	{"count": 5,"group": "5","name": "免费空间","title":"使用过的免费空间sam35.y365.com sam35.8u8.com","url": "#2"}, 
+	{"count": 7,"group": "6","name": "午夜的猫","title":"2002建立的第一真正的网上论坛,启用国际域名www.t5y6.com","url": "javascript:;"}, 
 	
-	{"count": 7,"group": "2","name": "域名","title":"使用过的域名","url": "#7"}, 
-	{"count": 7,"group": "2","name": "t5y6.com","title":"第一个域名","url": "#7"}, 
-	{"count": 7,"group": "2","name": "sduw.com","title":"杀毒网","url": "#7"}, 
-	{"count": 7,"group": "2","name": "wzurl.com","title":"网址导航","url": "#7"}, 
-	{"count": 7,"group": "2","name": "domeyes.com","title":"度蜜约","url": "#7"}, 
-	{"count": 7,"group": "2","name": "wuroom.com","title":"五维空间,正在使用域名","url": "#7"}, 
-	{"count": 7,"group": "2","name": "wurom.com","title":"物联网","url": "#7"}, 
-	{"count": 7,"group": "2","name": "wuzhou.xyz","title":"伍洲坐标,正在使用域名","url": "index.html"}, 
-		
-	{"count": 8,"group": "2","name": "博客","url": "#8"},
-	{"count": 9,"group": "1","name": "编程","url": "javascript:zopen(8);"},
-	{"count": 6,"group": "2","name": "单片机","url": "javascript:zopen(3);"},
-	{"count": 7,"group": "2","name": "C/C++","url": "#9"},
-	{"count": 8,"group": "6","name": "HTML/CSS","url": "javascript:;"},
-	{"count": 5,"group": "2","name": "PHP+MYSQL","url": "#13"},
-	{"count": 6,"group": "2","name": "VC","url": "#14"},
-	{"count": 6,"group": "2","name": "JavaScript","url": "#15"},
-	{"count": 6,"group": "2","name": "Android","url": "#16"},
-	{"count": 6,"group": "2","name": "Arm"},
-	{"count": 14,"group": "2","name": "伍洲坐标","url": "index.html","sym":"&#xf015"}]
-}
-];
+	{"count": 7,"group": "7","name": "域名","title":"使用过的域名","url": "#7"}, 
+	{"count": 7,"group": "8","name": "t5y6.com","title":"第一个域名","url": "#7"}, 
+	{"count": 7,"group": "9","name": "sduw.com","title":"杀毒网","url": "#7"}, 
+	{"count": 7,"group": "10","name": "wzurl.com","title":"网址导航","url": "#7"}, 
+	{"count": 7,"group": "11","name": "domeyes.com","title":"度蜜约","url": "#7"}, 
+	{"count": 7,"group": "12","name": "wuroom.com","title":"五维空间,正在使用域名","url": "#7"}, 
+	{"count": 7,"group": "13","name": "wurom.com","title":"物联网","url": "#7"}, 
+	{"count": 7,"group": "14","name": "wuzhou.xyz","title":"","url": "index.html"},
+	{"count": 8,"group": "15","name": "博客","url": "#8"},
+	{"count": 14,"group": "16","name": "伍洲坐标","url": "index.html","sym":"&#xf015"},
+	
+	{"count": 9,"group": "17","name": "编程","url": "javascript:zopen(8);"},
+	{"count": 6,"group": "18","name": "单片机","url": "javascript:zopen(3);"},
+	{"count": 7,"group": "19","name": "C/C++","url": "#9"},
+	{"count": 8,"group": "20","name": "HTML/CSS","url": "javascript:;"},
+	{"count": 5,"group": "21","name": "PHP+MYSQL","url": "#13"},
+	{"count": 6,"group": "22","name": "Visual C++","url": "#14"},
+	{"count": 6,"group": "23","name": "Java","url": "#15"},
+	{"count": 6,"group": "24","name": "Objective-C","url": "#16"},
+	{"count": 6,"group": "25","name": "Swift"},
+	{"count": 6,"group": "26","name": "JavaScript"}
+]}];
 //var width = 700,height = 700;
 
 (function($){
@@ -126,7 +127,8 @@ var obj = document.getElementById('about');
 var jsondata = homejson[id];
 
 var width = obj.clientWidth||obj.offsetWidth;
-var height= document.documentElement.clientHeight-65;//document.body.clientHeight;
+var height = document.documentElement.clientHeight-65;//document.body.clientHeight;
+//var dlen = (width > height)?height:width;
 //var height = document.getElementById("tags").offsetHeight;
 //var width = document.getElementById("tags").offsetWidth; 
 
@@ -202,7 +204,7 @@ node.append("svg:a")
   .attr("x", -10)
   .attr("y", -14)
   .attr("height", 28)
-  .attr("width", 70)
+  .attr("width", 80)
   .style("fill-opacity", "0");
             
 node.append("text")
@@ -223,9 +225,9 @@ force.on("tick", function() {
                       + d[2].x + "," + d[2].y;
                 });
                 node.attr("transform",function(d) {
-                           //x轴 超过宽度回弹
+                        //x轴.超过宽度回弹
                         if (d.x > width-60) d.x = width-70;
-                          //y轴 超过高度回弹
+                        //y轴.超过高度回弹
                         if (d.y > height-20) d.y = height-20;
                         if (d.x < 20) d.x = 20;
                         if (d.y < 20) d.y = 20;
