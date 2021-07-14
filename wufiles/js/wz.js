@@ -267,20 +267,20 @@ function conlist(){
         content.appendChild(newDiv);
 })(jQuery);
 
-function Homelist(id,list){
+function Homelist(id,z){
 
         var content = document.getElementById(id);
-            
+        if(content==null)return;    
         //var tag = sessionStorage["tag1"];
-        
+        content.innerHTML ='';
         //循环生成div标签，然后为innerHTML属性添加内容
         for(var i=0;i< datalist.length;i++){
         	
-        	if(datalist[i].label.includes(list)){
+        	if(datalist[i].label.indexOf(labels[z].id) > -1){
             //生成新标签
             var newDiv = document.createElement('div');
             //绑定类名和ID
-            newDiv.className = "entry";
+            newDiv.className = "entry clearfix";
             //newDiv.id = "tip"+datalist[i].id;
             //改变位置
             //var topValue = parseInt(Math.random()*400);
@@ -298,19 +298,20 @@ function Homelist(id,list){
             content.appendChild(newDiv);
            }
          //centerY += newDiv.offsetHeight;
-   if((document.documentElement.clientWidth > 1100 && i > 4 )|| (document.documentElement.clientWidth < 1100 && i > 2 ))
-        break;
+   //if((document.documentElement.clientWidth > 1100 && i > 4 )|| (document.documentElement.clientWidth < 1100 && i > 2 ))
+    //    break;
 
   /*if(centerY/2 > document.documentElement.clientHeight-400){ break;}*/            
         }
 }
 
+Homelist('list',0);
 //不是首页
 /*if(!RegExp(/index/).test(window.location.href))
 conlist();
 else
 {
-//Homelist('software',1);
+
 //Homelist('radio',2);
 //Homelist('mcu',3);
 //Homelist('rd',4);
