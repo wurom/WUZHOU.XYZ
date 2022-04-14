@@ -3,19 +3,84 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width">   
-    <title>伍洲坐标</title>
-    <meta name="keywords" content="无线电技术,软件开发,单片机开发,开发学习经验,实用小软件,英语资料,资源收录下载" />
-    <meta name="description" content="本站为伍洲的个人网站，记录学习经验与开发过程，本人爱好无线电技术、软件开发、微机开发、网站开发等。" />    
+    <title>时间Time</title>
+    <meta name="keywords" content="关于时间" />
+    <meta name="description" content="……" />    
     <link rel="shortcut icon" href="./wufiles/favicon.ico">
+    <meta name="viewport" content="width=device-width">
     <link href="./wufiles/styles.css" rel="stylesheet">
     <link rel="stylesheet" href="./wufiles/fonts/font-awesome.min.css">
-    <script data-ad-client="ca-pub-5414095334113187" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?7331184a3c570641dee9ef87b68c54be";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script>  
-</head>
-  <body>
+ 
+<style>	
+.bhui,.year,.month,.days, .hours, .minutes, .seconds {
+  display: inline-block;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 0px;
+  text-align: center;
+  color:Black;
+  vertical-align:top;
+}
+.year {background: #00BBBB;}
+.month {background: #00AE57;}
+.days {background: #FF8000;}
+.hours {background: #0080FF;}
+.minutes {background: #76EC00;}
+.seconds {background: #FF0080;}
 
-    <div class="wrapper">
+.bhui {background: #D7D7D7;}
+
+.name {
+  position: relative;
+  margin: 5px;
+  overflow: hidden;
+  width: auto;
+
+}
+.container {
+  position: relative;
+  margin: 5px;
+  overflow: hidden;
+  width: auto;
+  height: 120px;
+
+}
+
+.timeshow span {
+  display: inline-block;
+  padding: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 0px;
+  text-align: center;
+}
+
+.circle{
+  width: auto;
+  height: 225px;
+  position: relative;
+}
+canvas{
+  display: block;
+  margin: 0;
+  position: absolute;
+  background: white;
+  left: 0;
+  top: 0;
+}
+#canvas_1{z-index: 1; background: transparent;}
+#canvas_2{z-index: 2; background: transparent;}
+#canvas_3{z-index: 3; background: transparent;}
+#canvas_4{z-index: 4; background: transparent;}
+#canvas_5{z-index: 5; background: transparent;}
+#canvas_6{z-index: 6; background: transparent;}
+
+</style> 
+<script>var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?7331184a3c570641dee9ef87b68c54be";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);})();</script> 
+ </head>
+  <body>
+  <div class="wrapper">
 
 <header id="top-bar">	
 		<div style="position:relative;height:100%;"><div id="top-bar__logo"><h1 class="site-logo"><a href="index.html"><i class="fa fa-home"></i> 伍洲坐标</a></h1></div><a id="top-bar__navigation-toggler" href="javascript:void(0);"><span></span></a>
@@ -35,11 +100,33 @@
 </ul>
 		</nav></div></div>
 	</header> 
- 
-      <section>
-      <div id="list"></div>
-      </section>		 
-    </div>
+	
+   <section>
+    <div class="entry clearfix">
+		<div class="tvid" id="wzword" onclick="ShowWord()"></div>
+	 </div>
+
+ <div>
+<div class="circle">
+  <canvas id="canvas_1" width="224" height="224"></canvas>
+  <canvas id="canvas_2" width="224" height="224"></canvas>
+  <canvas id="canvas_3" width="224" height="224"></canvas>
+  <canvas id="canvas_4" width="224" height="224"></canvas>
+  <canvas id="canvas_5" width="224" height="224"></canvas>
+  <canvas id="canvas_6" width="224" height="224"></canvas>
+</div>
+
+  <div class="timeshow" id="iyear"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="timeshow" id="imonth"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="timeshow" id="idays"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="timeshow" id="ihours"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="timeshow" id="iminutes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="timeshow" id="iseconds"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+</div>
+		 
+    </section>
+</div>
   
   <div id="footer" style="display: block;">    
   <p>&#169;<script>document.write((new Date()).getFullYear());</script> <a href="https://wuzhou.xyz/">WUZHOU.XYZ</a>
@@ -63,30 +150,35 @@
                                 <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
                             </span>
                         </a>
-                        
+
+
+
                          <a class="email" target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=bxcWFS8YGhUHABpBFxYV" title="Email">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
                                 <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
                             </span>
-                        </a>  
-
-                        <a class="comments" target="_blank" href="./love.html" title="love">
+                        </a> 
+                        
+                        <a class="comments" target="_blank" href="#" title="love">
                             <span class="fa-stack fa-lg">
                                 <i class="fa fa-circle fa-stack-2x"></i>
                                 <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
                             </span>
-                        </a>
-
-                     
+                        </a> 
+                                                                     
                         </span></p>
 
-    </div>    
+    </div>
   <script type="text/javascript" src="./wufiles/js/content.js"></script>
+   
   <script type="text/javascript" src="./wufiles/js/d3.v3.min.js"></script>
   <script type="text/javascript" src="./wufiles/js/jquery-1.7.1.min.js"></script>
-  <script type="text/javascript" src="./wufiles/js/tag.js"></script>  
-  <script type="text/javascript" src="./wufiles/js/wz.js"></script>  
-   
+  <script type="text/javascript" src="./wufiles/js/tag.js"></script>
+  <script type="text/javascript" src="./wufiles/js/wz.js"></script>
+  
+    <script src="./wufiles/js/word.js"></script>
+    <script src="./wufiles/js/wutime.js"></script>
+      
  </body>
 </html>
