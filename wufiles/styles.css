@@ -211,10 +211,10 @@ section {
   }
 
   section {
-
     border-width:1px 0;
     padding:10px;
-    padding-top: 100px;
+    padding-top:100px;
+    padding-bottom:60px;
   }
 #top-bar{
     width:100%;
