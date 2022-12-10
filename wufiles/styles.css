@@ -125,7 +125,6 @@ strong {
 
 section {
   border-left: 350px solid #fff;
-  border-bottom: 35px solid #fff;
 }
 
 small {
@@ -214,7 +213,6 @@ section {
     border-width:1px 0;
     padding:10px;
     padding-top:100px;
-    padding-bottom:60px;
   }
 #top-bar{
     width:100%;
@@ -354,7 +352,7 @@ color:#808080;
 
 #footer {
 	height: 60px;
-	position: fixed;
+	position: relative;
 	width: 100%;
 	bottom: 0;
 	background: rgba(222,222,222,0.5);
