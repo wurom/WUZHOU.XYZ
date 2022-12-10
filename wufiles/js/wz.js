@@ -303,6 +303,11 @@ function Homelist(id,z){
 
   /*if(centerY/2 > document.documentElement.clientHeight-400){ break;}*/            
         }
+        
+      if($(this).hasClass('is-active')) {
+				$(this).removeClass('is-active');
+				$('#top-bar').removeClass('is-expanded');
+			}        
 }
 
 Homelist('list',0);
