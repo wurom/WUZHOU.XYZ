@@ -304,9 +304,9 @@ function Homelist(id,z){
   /*if(centerY/2 > document.documentElement.clientHeight-400){ break;}*/            
         }
         
-      if($(this).hasClass('is-active')) {
-				$(this).removeClass('is-active');
-				$('#top-bar').removeClass('is-expanded');
+      if($('#top-bar__navigation-toggler').hasClass('is-active')) {
+				 $('#top-bar__navigation-toggler').removeClass('is-active');
+				 $('#top-bar').removeClass('is-expanded');
 			}        
 }
 
