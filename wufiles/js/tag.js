@@ -57,14 +57,16 @@ var homejson = [{"links": [
 	{"source": "3","target": "7","value": "3"},	
 	{"source": "6","target": "8","value": "6"},
 	{"source": "6","target": "9","value": "6"},	
-  {"source": "2","target": "17","value": "2"},
-	
+    {"source": "2","target": "17","value": "2"},
+	{"source": "2","target": "28","value": "2"},
+
 	{"source": "7","target": "8","value": "1"},
 	{"source": "7","target": "9","value": "1"},
 	{"source": "7","target": "10","value": "1"},
 	{"source": "7","target": "11","value": "1"},
 	{"source": "7","target": "12","value": "2"},
-	{"source": "7","target": "13","value": "1"},	
+	{"source": "7","target": "13","value": "1"},
+	{"source": "7","target": "27","value": "1"},	
 	{"source": "7","target": "14","value": "2"},
 	{"source": "12","target": "15","value": "12"},
 	{"source": "14","target": "16","value": "14"},
@@ -79,6 +81,7 @@ var homejson = [{"links": [
 	{"source": "17","target": "25","value": "3"},
 	{"source": "17","target": "26","value": "3"}],
 	
+
 	"nodes": [
 	{"count": 9,"group": "0","name": "接触电脑","title":" 高中练习五笔首次接触电脑","url": "javascript:;"},
 	{"count": 8,"group": "1","name": "安装系统","title":"1998年练习安装电脑系统"},
@@ -93,7 +96,7 @@ var homejson = [{"links": [
 	{"count": 7,"group": "9","name": "sduw.com","title":"杀毒网","url": "#7"}, 
 	{"count": 7,"group": "10","name": "wzurl.com","title":"网址导航","url": "#7"}, 
 	{"count": 7,"group": "11","name": "domeyes.com","title":"度蜜约","url": "#7"}, 
-	{"count": 7,"group": "12","name": "wuroom.com","title":"五维空间,正在使用域名","url": "#7"}, 
+	{"count": 7,"group": "12","name": "wuroom.com","title":"五维空间","url": "#7"}, 
 	{"count": 7,"group": "13","name": "wurom.com","title":"物联网","url": "#7"}, 
 	{"count": 7,"group": "14","name": "wuzhou.xyz","title":"","url": "index.html"},
 	{"count": 8,"group": "15","name": "博客","url": "#8"},
@@ -108,7 +111,9 @@ var homejson = [{"links": [
 	{"count": 6,"group": "23","name": "Java","url": "#15"},
 	{"count": 6,"group": "24","name": "Objective-C","url": "#16"},
 	{"count": 6,"group": "25","name": "Swift"},
-	{"count": 6,"group": "26","name": "JavaScript"}
+	{"count": 6,"group": "26","name": "JavaScript"},
+	{"count": 7,"group": "27","name": "sdrds.com","title":"SDR软件无线电","url": "#7"},
+	{"count": 2,"group": "28","name": "设计","title":"AutoCAD、SOLIDWORKS、Photoshop、CorelDRAW","url": "#7"}
 ]}];
 //var width = 700,height = 700;
 
