@@ -89,6 +89,20 @@
   .pager-btn:hover:not(:disabled), .pager-num:hover { background:#eef3ff; }
   .pager-num.active { background:#1f4fd6; color:#fff; border-color:#1f4fd6; }
   .pager-btn:disabled { color:#b8c0cc; border-color:#eef1f5; background:#f8fafc; cursor:not-allowed; }
+  .dl-card {
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    border:1px solid #e6e9ef; border-radius:12px; padding:16px 18px; background:#f8fafc;
+  }
+  .dl-info { min-width:0; }
+  .dl-name { font-size:16px; font-weight:700; color:#1f2329; }
+  .dl-meta { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+  .dl-tag { font-size:12px; color:#5b6573; background:#eef3ff; padding:3px 10px; border-radius:20px; }
+  .dl-btn {
+    flex:0 0 auto; display:inline-flex; align-items:center; gap:6px;
+    background:#1f4fd6; color:#fff; font-size:14px; font-weight:600; text-decoration:none;
+    padding:10px 18px; border-radius:10px; transition:.15s;
+  }
+  .dl-btn:hover { background:#1740b8; }
 </style>
 </head>
 <body>
@@ -128,6 +142,19 @@
           <h3>挪车联系</h3>
           <p>可经上位机随时改写的挪车号码告示页，号码掉电可选持久化，绝不编造假号码。</p>
         </div>
+      </div>
+
+      <div class="section-title">固件下载</div>
+      <div class="dl-card">
+        <div class="dl-info">
+          <div class="dl-name">HM2.13 固件（DA14585）</div>
+          <div class="dl-meta">
+            <span class="dl-tag">版本 v1.0.0</span>
+            <span class="dl-tag">更新于 2026-11-10</span>
+            <span class="dl-tag">2.13″ 墨水屏</span>
+          </div>
+        </div>
+        <a class="dl-btn" href="HM2.13_v1.0.0.bin" download>⬇ 下载固件</a>
       </div>
 
       <div class="section-title">获取与支持</div>
@@ -195,7 +222,6 @@
       pager.innerHTML = '';
       return;
     }
-    data.sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
     var total = data.reduce(function (s, r) { return s + (Number(r.amount) || 0); }, 0);
     countEl.textContent = '共 ' + data.length + ' 笔 · 累计 ¥' + total.toFixed(2);
 
