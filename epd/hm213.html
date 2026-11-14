@@ -60,6 +60,35 @@
     padding:3px 10px; border-radius:20px; margin-right:8px; }
   a.tag { text-decoration:none; cursor:pointer; transition:.15s; }
   a.tag:hover { background:#1f4fd6; color:#fff; }
+  .rec-count { font-size:13px; font-weight:500; color:#8a93a0; margin-left:8px; }
+  .records { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+  .rec {
+    display:flex; align-items:center; gap:12px;
+    border:1px solid #eef1f5; border-radius:12px; padding:12px 14px; background:#fbfcfe;
+  }
+  .rec-avatar {
+    flex:0 0 auto; width:38px; height:38px; border-radius:50%;
+    background:linear-gradient(135deg,#2b6cf6,#1f4fd6); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700;
+  }
+  .rec-main { flex:1; min-width:0; }
+  .rec-name { font-size:14px; font-weight:600; color:#1f2329; }
+  .rec-msg {
+    font-size:13px; color:#6b7280; margin-top:2px; line-height:1.5;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .rec-meta { flex:0 0 auto; text-align:right; }
+  .rec-amt { font-size:15px; font-weight:700; color:#e0532f; }
+  .rec-date { font-size:11px; color:#9aa3af; margin-top:2px; }
+  .rec-note { font-size:12px; color:#9aa3af; margin-top:4px; }
+  .pager { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .pager-btn, .pager-num {
+    font-family:inherit; font-size:13px; padding:6px 12px; border-radius:8px;
+    border:1px solid #d9e6ff; background:#fff; color:#1f4fd6; cursor:pointer; transition:.15s;
+  }
+  .pager-btn:hover:not(:disabled), .pager-num:hover { background:#eef3ff; }
+  .pager-num.active { background:#1f4fd6; color:#fff; border-color:#1f4fd6; }
+  .pager-btn:disabled { color:#b8c0cc; border-color:#eef1f5; background:#f8fafc; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -108,21 +137,95 @@
           <p>
             软件可免费使用。若您觉得这个项目有帮助，欢迎通过微信 / 支付宝
             <b>自愿赞赏</b>支持开发者（非募捐、非强制）。<br>
-            下方为项目主页 / 下载入口二维码。
+            
           </p>
           <div style="margin-top:10px;">
             <a class="tag" href="da14585.html">线上软件服务</a>
-            <span class="tag">无固定门店</span>
+            <span class="tag">免费使用无限制</span>
             <span class="tag">个人独立开发</span>
           </div>
         </div>
         <div class="qr"><img src="tip.png" alt="赞赏码"></div>
       </div>
+
+      <div class="section-title">赞赏记录 <span class="rec-count" id="recCount"></span></div>
+      <div class="records" id="records"></div>
+      <div class="pager" id="pager"></div>
+      <div class="rec-note">记录由开发者在收到赞赏后手动更新 · 感谢每一位支持者 ❤️</div>
     </div>
 
     <div class="foot">
 
     </div>
   </div>
+
+  <script src="donations.js"></script>
+  <script>
+  (function () {
+    var PAGE_SIZE = 5;
+    var box = document.getElementById('records');
+    var pager = document.getElementById('pager');
+    var countEl = document.getElementById('recCount');
+    var data = (window.DONATIONS || []).slice();
+    var page = 1;
+
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+    function recHTML(r) {
+      var initial = (r.name || '?').trim().charAt(0);
+      var amt = (Number(r.amount) || 0).toFixed(2);
+      return '<div class="rec">'
+        + '<div class="rec-avatar">' + esc(initial) + '</div>'
+        + '<div class="rec-main">'
+        +   '<div class="rec-name">' + esc(r.name || '匿名') + '</div>'
+        +   (r.message ? '<div class="rec-msg">' + esc(r.message) + '</div>' : '')
+        + '</div>'
+        + '<div class="rec-meta">'
+        +   '<div class="rec-amt">¥' + amt + '</div>'
+        +   (r.date ? '<div class="rec-date">' + esc(r.date) + '</div>' : '')
+        + '</div>'
+        + '</div>';
+    }
+
+    if (!data.length) {
+      box.innerHTML = '<div class="rec-note">暂无赞赏记录，期待你的第一笔支持 ❤️</div>';
+      pager.innerHTML = '';
+      return;
+    }
+    data.sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+    var total = data.reduce(function (s, r) { return s + (Number(r.amount) || 0); }, 0);
+    countEl.textContent = '共 ' + data.length + ' 笔 · 累计 ¥' + total.toFixed(2);
+
+    var totalPages = Math.max(1, Math.ceil(data.length / PAGE_SIZE));
+
+    function render() {
+      if (page > totalPages) page = totalPages;
+      if (page < 1) page = 1;
+      var start = (page - 1) * PAGE_SIZE;
+      box.innerHTML = data.slice(start, start + PAGE_SIZE).map(recHTML).join('');
+      renderPager();
+    }
+    function renderPager() {
+      if (totalPages <= 1) { pager.innerHTML = ''; return; }
+      var html = '<button class="pager-btn" data-go="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + '>上一页</button>';
+      for (var i = 1; i <= totalPages; i++) {
+        html += '<button class="pager-num' + (i === page ? ' active' : '') + '" data-go="' + i + '">' + i + '</button>';
+      }
+      html += '<button class="pager-btn" data-go="' + (page + 1) + '"' + (page === totalPages ? ' disabled' : '') + '>下一页</button>';
+      pager.innerHTML = html;
+    }
+    pager.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-go]');
+      if (!btn || btn.disabled) return;
+      page = Number(btn.getAttribute('data-go'));
+      render();
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    render();
+  })();
+  </script>
 </body>
 </html>
