@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HM2.13 电子价签固件 · 软件介绍</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:#eef1f5; color:#1f2329; padding:24px;
+  }
+  .page {
+    width: 760px; margin: 0 auto; background:#fff; border-radius:14px;
+    overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,.08);
+  }
+  .hero {
+    background: linear-gradient(135deg,#2b6cf6,#1f4fd6); color:#fff;
+    padding: 36px 40px; display:flex; align-items:center; gap:20px;
+  }
+  .logo {
+    width:84px; height:84px; border-radius:18px; background:rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700;
+    border:2px dashed rgba(255,255,255,.6);
+  }
+  .hero h1 { font-size:30px; font-weight:700; }
+  .hero p { margin-top:6px; opacity:.92; font-size:15px; }
+  .body { padding: 32px 40px; }
+  .section-title { font-size:18px; font-weight:700; margin:8px 0 14px; color:#1f2329; }
+  .desc { font-size:15px; line-height:1.9; color:#3a4250; margin-bottom:26px; }
+  .features { display:flex; gap:14px; margin-bottom:28px; flex-wrap:wrap; }
+  .card {
+    flex:1; min-width:200px; border:1px solid #e6e9ef; border-radius:12px; padding:16px;
+    background:#f8fafc;
+  }
+  .card .ic { font-size:24px; }
+  .card h3 { font-size:15px; margin:8px 0 6px; }
+  .card p { font-size:13px; color:#6b7280; line-height:1.6; }
+  .support {
+    border:1px solid #d9e6ff; background:#f3f8ff; border-radius:14px; padding:22px 24px;
+    display:flex; align-items:center; gap:22px;
+  }
+  .support .txt { flex:1; min-width:0; }
+  .support h3 { font-size:16px; color:#1f4fd6; margin-bottom:6px; }
+  .support p { font-size:13px; color:#5b6573; line-height:1.7; }
+  .qr {
+    flex:0 0 auto; width:200px; padding:12px; border-radius:12px;
+    background:#fff; border:1px solid #d9e6ff;
+    box-shadow:0 2px 12px rgba(31,79,214,.10);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .qr img {
+    display:block; width:100%; height:auto; border-radius:6px;
+  }
+  .foot {
+    padding:18px 40px; background:#f8fafc; border-top:1px solid #eef1f5;
+    font-size:12px; color:#8a93a0; line-height:1.7;
+  }
+  .tag { display:inline-block; background:#eef3ff; color:#1f4fd6; font-size:12px;
+    padding:3px 10px; border-radius:20px; margin-right:8px; }
+  a.tag { text-decoration:none; cursor:pointer; transition:.15s; }
+  a.tag:hover { background:#1f4fd6; color:#fff; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div class="logo">价签</div>
+      <div>
+        <h1>HM2.13 电子价签固件</h1>
+        <p>跑在 DA14585 上的低功耗 2.13″ 墨水屏固件，配 Web 蓝牙工具控制</p>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="section-title">软件简介</div>
+      <div class="desc">
+        HM2.13 是一套开源的电子价签（电子墨水屏）固件，运行于 DA14585 微控制器，
+        驱动 2.13 英寸低功耗墨水屏。软件可免费下载使用，提供设备信息、时钟、万年历、
+        图片推送、倒计时、挪车联系等多个可视化功能页，并配套基于 Web Bluetooth 的手机
+        控制工具（console / 推图 / OTA）。本项目为个人独立开发，支持双 bank 差分高速
+        OTA 升级；用户可通过页面内的"赞赏"自愿支持开发者持续维护与迭代。
+      </div>
+
+      <div class="section-title">主要功能</div>
+      <div class="features">
+        <div class="card">
+          <div class="ic">⏰</div>
+          <h3>时钟与万年历</h3>
+          <p>公历 + 农历 + 24 节气 + 节日显示，蓝牙对时，外部晶振低功耗走时（约 ±1.7 秒/天）。</p>
+        </div>
+        <div class="card">
+          <div class="ic">📷</div>
+          <h3>手机推图</h3>
+          <p>通过 Web 蓝牙把任意 1bpp 图片整屏推送到墨水屏显示，可设定自动回默认页。</p>
+        </div>
+        <div class="card">
+          <div class="ic">🚗</div>
+          <h3>挪车联系</h3>
+          <p>可经上位机随时改写的挪车号码告示页，号码掉电可选持久化，绝不编造假号码。</p>
+        </div>
+      </div>
+
+      <div class="section-title">获取与支持</div>
+      <div class="support">
+        <div class="txt">
+          <h3>自愿赞赏 · 支持持续开发</h3>
+          <p>
+            软件可免费使用。若您觉得这个项目有帮助，欢迎通过微信 / 支付宝
+            <b>自愿赞赏</b>支持开发者（非募捐、非强制）。<br>
+            下方为项目主页 / 下载入口二维码。
+          </p>
+          <div style="margin-top:10px;">
+            <a class="tag" href="da14585.html">线上软件服务</a>
+            <span class="tag">无固定门店</span>
+            <span class="tag">个人独立开发</span>
+          </div>
+        </div>
+        <div class="qr"><img src="tip.png" alt="赞赏码"></div>
+      </div>
+    </div>
+
+    <div class="foot">
+
+    </div>
+  </div>
+</body>
+</html>
