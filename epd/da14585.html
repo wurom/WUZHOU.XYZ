@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESL Studio · 价签统一控制台</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --panel-2:#fafbfc; --line:#e5e8ed;
+  --text:#1c2330; --muted:#6b7482; --faint:#9aa3b0;
+  --brand:#4f46e5; --brand-soft:#eef0ff; --brand-line:#c9c6fb;
+  --teal:#0f766e; --teal-soft:#e6f5f2;
+  --amber:#b45309; --amber-soft:#fff4e3;
+  --rose:#be123c; --rose-soft:#ffeaf0;
+  --blue:#1d4ed8; --blue-soft:#e8f0ff;
+  --ok:#15803d; --shadow:0 1px 2px #1018280a,0 8px 24px #1018280b;
+  --radius:14px; --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+[data-theme="dark"]{
+  --bg:#11151c; --panel:#191f29; --panel-2:#1e2531; --line:#2b3442;
+  --text:#e8edf5; --muted:#9aa7b8; --faint:#71809a;
+  --brand:#8b83ff; --brand-soft:#262445; --brand-line:#44406e;
+  --teal:#5eead4; --teal-soft:#123830;
+  --amber:#fbbf24; --amber-soft:#3a2c13;
+  --rose:#fb7185; --rose-soft:#3d1d29;
+  --blue:#93b4ff; --blue-soft:#1c2a48;
+  --ok:#4ade80; --shadow:0 1px 2px #0003,0 8px 24px #0004;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--brand);text-decoration:none}
+code,.mono{font-family:var(--mono);font-size:12px}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* ---------- 骨架 ---------- */
+.app{display:grid;grid-template-columns:224px minmax(0,1fr);height:100vh;overflow:hidden}
+.side{background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.brand{padding:22px 20px 18px;border-bottom:1px solid var(--line)}
+.brand .logo{display:flex;align-items:center;gap:10px}
+.brand .mark{width:32px;height:32px;border-radius:9px;background:var(--brand);
+  color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:-1px}
+.brand h1{margin:0;font-size:15px;font-weight:650;letter-spacing:.2px}
+.brand p{margin:2px 0 0 42px;font-size:11px;color:var(--faint)}
+.nav{padding:12px 10px;flex:1;overflow:auto}
+.nav button{width:100%;display:flex;align-items:center;gap:11px;padding:9px 12px;margin:2px 0;
+  border:0;border-radius:9px;background:transparent;color:var(--muted);text-align:left;font-size:13.5px}
+.nav button:hover{background:var(--panel-2);color:var(--text)}
+.nav button.active{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.nav .ico{width:18px;text-align:center;font-size:15px;line-height:1}
+.nav .badge{margin-left:auto;font-size:10px;background:var(--rose-soft);color:var(--rose);
+  border-radius:9px;padding:1px 6px;font-weight:700}
+.side-foot{padding:12px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--faint)}
+.side-foot b{color:var(--muted);font-weight:600}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.topbar{height:64px;flex:none;background:var(--panel);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:0 24px}
+.topbar h2{margin:0;font-size:16px;font-weight:650}
+.topbar .crumb{font-size:12px;color:var(--faint);margin-left:2px}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;
+  background:var(--panel-2);border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+.pill.on .dot{background:var(--ok);box-shadow:0 0 0 3px #15803d22}
+.pill.on{color:var(--ok);border-color:#15803d33;background:#15803d0c}
+.pill.off .dot{background:var(--rose)}
+.content{flex:1;overflow:auto;padding:22px 24px 96px}
+.page{display:none;max-width:1120px;margin:0 auto;animation:fade .18s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- 卡片 ---------- */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+.card > h3{margin:0 0 4px;font-size:14px;font-weight:650;display:flex;align-items:center;gap:8px}
+.card > h3 .tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;
+  background:var(--brand-soft);color:var(--brand)}
+.card > .sub{margin:0 0 16px;font-size:12px;color:var(--muted)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+
+/* ---------- 控件 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 14px;
+  border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);
+  font-size:13px;transition:.15s;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--brand-line);background:var(--brand-soft)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.btn.primary:hover:not(:disabled){filter:brightness(1.08);background:var(--brand)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--panel-2);color:var(--text)}
+.btn.danger{color:var(--rose);border-color:var(--rose);background:transparent}
+.btn.danger:hover:not(:disabled){background:var(--rose-soft)}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.2px}
+.field .hint{font-size:11px;color:var(--faint)}
+input[type=text],input[type=number],input[type=datetime-local],select{
+  padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);
+  outline:none;min-width:0;width:100%}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+input[type=file]{display:none}
+.chk{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--brand);width:15px;height:15px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel-2)}
+.seg button{border:0;background:transparent;padding:7px 11px;font-size:12.5px;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.on{background:var(--brand);color:#fff;font-weight:600}
+
+/* ---------- 数据展示 ---------- */
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:11px;padding:13px 14px;min-width:0}
+.stat .k{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.stat .v{font-size:20px;font-weight:650;margin-top:3px;letter-spacing:-.3px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.stat .v.sm{font-size:14px;font-weight:600}
+.stat .u{font-size:11px;color:var(--faint);font-weight:400;margin-left:3px}
+.stat.accent{background:var(--brand-soft);border-color:var(--brand-line)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:7px 14px;font-size:12.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);font-size:12px;word-break:break-all}
+.bar{height:9px;background:var(--panel-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar > i{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--brand),#8b83ff);transition:width .12s linear}
+.bar.ok > i{background:linear-gradient(90deg,var(--teal),#5eead4)}
+.bar-label{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin:8px 0 5px}
+.notice{padding:11px 14px;border-radius:10px;font-size:12.5px;line-height:1.55;
+  background:var(--blue-soft);color:var(--blue);border:1px solid #1d4ed822;margin:12px 0}
+.notice.warn{background:var(--amber-soft);color:var(--amber);border-color:#b4530933}
+.notice.danger{background:var(--rose-soft);color:var(--rose);border-color:#be123c33}
+.notice b{font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chip{font-size:11px;padding:3px 9px;border-radius:7px;background:var(--panel-2);
+  border:1px solid var(--line);color:var(--muted);font-family:var(--mono)}
+.chip.on{background:var(--teal-soft);color:var(--teal);border-color:#0f766e33}
+.chip.off{background:var(--rose-soft);color:var(--rose);border-color:#be123c33}
+
+/* ---------- 上传 / 预览 ---------- */
+.drop{border:1.5px dashed var(--line);border-radius:12px;padding:26px 18px;text-align:center;
+  background:var(--panel-2);transition:.15s;cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-soft)}
+.drop .big{font-size:26px;line-height:1;margin-bottom:8px;color:var(--brand)}
+.drop .t{font-size:13px;font-weight:600}
+.drop .d{font-size:11.5px;color:var(--faint);margin-top:3px}
+.preview-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.epaper{background:#fff;border:1px solid #cbd2dc;border-radius:6px;padding:7px;
+  box-shadow:inset 0 0 0 1px #00000008,0 4px 14px #00000012;flex:none}
+.epaper canvas{display:block;image-rendering:pixelated;border:1px solid #e3e7ec}
+.preview-meta{flex:1;min-width:220px}
+
+/* ---------- 日志 ---------- */
+.dock{flex:none;background:var(--panel);border-top:1px solid var(--line);
+  box-shadow:0 -4px 18px #10182808;position:relative;z-index:5}
+.dock-head{display:flex;align-items:center;gap:10px;padding:8px 20px;cursor:pointer;user-select:none}
+.dock-head .t{font-size:12px;font-weight:650;display:flex;align-items:center;gap:8px}
+.dock-head .last{font-size:11.5px;color:var(--muted);font-family:var(--mono);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.dock-body{display:none;border-top:1px solid var(--line);max-height:210px;overflow:auto;padding:6px 20px 10px}
+.dock.open .dock-body{display:block}
+.logline{display:flex;gap:10px;font-family:var(--mono);font-size:11.5px;padding:3px 0;
+  border-bottom:1px solid var(--line);align-items:baseline}
+.logline:last-child{border-bottom:0}
+.logline .ts{color:var(--faint);flex:none}
+.logline .lv{flex:none;width:46px;font-weight:700}
+.logline .src{flex:none;width:56px;color:var(--muted)}
+.logline .msg{white-space:pre-wrap;word-break:break-all}
+.lv.DEBUG{color:var(--faint)} .lv.INFO{color:var(--blue)}
+.lv.WARN{color:var(--amber)} .lv.ERROR{color:var(--rose)}
+.lv.DEVICE{color:var(--teal)}
+.logtable{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px}
+.logtable th{text-align:left;padding:8px 10px;color:var(--muted);font-weight:600;
+  border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+.logtable td{padding:5px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.logtable tr:hover td{background:var(--panel-2)}
+.empty{padding:28px;text-align:center;color:var(--faint);font-size:12.5px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar input[type=text]{width:190px}
+.counts{display:flex;gap:10px;font-size:11.5px;color:var(--muted);margin-left:auto}
+.counts b{font-variant-numeric:tabular-nums}
+
+table.spec{width:100%;border-collapse:collapse;font-size:12px}
+table.spec th,table.spec td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+table.spec th{color:var(--muted);font-weight:600;background:var(--panel-2)}
+table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
+.foot-note{font-size:11.5px;color:var(--faint);margin-top:8px}
+
+/* ---------- 挪车页电子纸模拟（2 倍放大 212x104 逻辑画布） ---------- */
+.pk-screen{width:434px;height:218px;background:#fff;border:1px solid #cbd2dc;border-radius:6px;
+  padding:5px;box-shadow:inset 0 0 0 1px #00000008,0 4px 14px #00000012;flex:none;overflow:hidden}
+.pk-canvas{width:212px;height:104px;background:#fff;color:#111;transform:scale(2);
+  transform-origin:top left;display:flex;flex-direction:column;overflow:hidden;
+  font-family:"SimSun","Songti SC",serif}
+.pk-bar{background:#111;color:#fff}
+.pk-top{height:16px;flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:0 4px;font-size:11px;line-height:1}
+.pk-top b{font-family:var(--mono);font-size:8px;font-weight:400;margin-left:6px;letter-spacing:1px}
+.pk-badge{width:14px;height:14px;background:#fff;color:#111;display:flex;align-items:center;
+  justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700}
+/* 三行结构：16 标题 + 4 间隔 + 60 号码牌 + 6 间隔 + 18 底部 = 104。
+   号码纵向 1.8 倍拉伸，对应固件 8x16 字模的 sx=2 / sy=3 放大
+   （墨迹约 33 行，占号码牌 60 行的一半多一点）。 */
+.pk-plate{height:60px;flex:none;margin:4px 4px 0;border:1px solid #111;display:flex;
+  align-items:center;justify-content:center;overflow:hidden;
+  box-shadow:inset 0 0 0 1px #fff,inset 0 0 0 2px #111}
+.pk-plate span{display:block;font-family:var(--mono);font-size:25px;font-weight:700;
+  letter-spacing:0;white-space:nowrap;line-height:1;transform:scaleY(1.8)}
+.pk-plate.unset span{font-family:"SimSun","Songti SC",serif;font-size:11px;
+  font-weight:400;letter-spacing:0;transform:none}
+.pk-foot{height:18px;flex:none;margin-top:6px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;letter-spacing:1px}
+.pk-meta{flex:1;min-width:240px}
+.pk-meta dl{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;font-size:12px;margin:0}
+.pk-meta dt{color:var(--muted)}
+.pk-meta dd{margin:0;font-family:var(--mono);font-size:12px;word-break:break-all}
+
+@media (max-width:860px){
+  .app{grid-template-columns:64px minmax(0,1fr)}
+  .brand{padding:16px 12px}.brand h1,.brand p,.nav button span.txt,.side-foot{display:none}
+  .nav button{justify-content:center}.nav .badge{display:none}
+  .content{padding:16px 14px 90px}.topbar{padding:0 14px}.topbar .crumb{display:none}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="logo"><div class="mark">ESL</div><h1>ESL Studio</h1></div>
+      <p>DA14585 · 2.13″ 墨水屏控制台</p>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-page="overview" class="active"><span class="ico">◫</span><span class="txt">总览与设备</span></button>
+      <button data-page="time"><span class="ico">◷</span><span class="txt">对时与校准</span></button>
+      <button data-page="parking"><span class="ico">☎</span><span class="txt">挪车号码</span></button>
+      <button data-page="image"><span class="ico">▧</span><span class="txt">图片显示</span></button>
+      <button data-page="ota"><span class="ico">⇩</span><span class="txt">固件升级 OTA</span></button>
+      <button data-page="logs"><span class="ico">≡</span><span class="txt">运行日志</span><span class="badge" id="navBadge">0</span></button>
+      <button data-page="about"><span class="ico">ⓘ</span><span class="txt">协议与说明</span></button>
+    </nav>
+    <div class="side-foot">
+      自建固件 · <b>ESL-SELF</b><br>
+      Console proto v1 · C99
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h2 id="pageTitle">总览与设备</h2>
+      <span class="crumb" id="pageCrumb">连接状态 / 快捷操作</span>
+      <div class="spacer"></div>
+      <span class="pill" id="svcPill"><span class="dot"></span><span id="svcText">3 个服务未就绪</span></span>
+      <span class="pill off" id="connPill"><span class="dot"></span><span id="connText">未连接</span></span>
+      <button class="btn sm" id="btnTheme" title="切换明暗主题">◐</button>
+      <button class="btn primary" id="btnConnect">连接设备</button>
+    </header>
+
+    <div class="content">
+
+      <!-- ================= 总览 ================= -->
+      <section class="page active" data-page="overview">
+        <div class="notice" id="secureNotice" style="display:none">
+          <b>需要安全上下文。</b> Web Bluetooth 只在 <code>https://</code> 或 <code>localhost</code> 下可用。
+          请在工程目录执行 <code>python -m http.server 8443</code>，再访问
+          <code>http://localhost:8443/tools/console.html</code>。
+        </div>
+
+        <div class="card">
+          <h3>设备状态 <span class="tag" id="statusTag">等待连接</span></h3>
+          <p class="sub">连接后自动读取一次状态快照；设备侧日志事件也会实时推送到日志页。</p>
+          <div class="grid g4" id="statGrid">
+            <div class="stat"><div class="k">面板</div><div class="v sm" id="sPanel">—</div></div>
+            <div class="stat"><div class="k">固件</div><div class="v sm" id="sVersion">—</div></div>
+            <div class="stat"><div class="k">设备时间</div><div class="v sm" id="sDevTime">—</div></div>
+            <div class="stat"><div class="k">当前功能页</div><div class="v sm" id="sPage">—</div></div>
+            <div class="stat"><div class="k">RTC</div><div class="v sm" id="sRtc">—</div></div>
+            <div class="stat"><div class="k">校准 / 时区</div><div class="v sm" id="sCal">—</div></div>
+            <div class="stat"><div class="k">运行时间</div><div class="v sm" id="sUptime">—</div></div>
+            <div class="stat"><div class="k">imageid</div><div class="v sm" id="sImageid">—</div></div>
+            <div class="stat"><div class="k">接线自检</div><div class="v sm" id="sWire">—</div></div>
+          </div>
+          <div class="chips" id="svcChips"></div>
+        </div>
+
+        <div class="grid g2">
+          <div class="card">
+            <h3>快捷操作</h3>
+            <p class="sub">对时、刷新状态、页面切换都走 Console 服务，不占用高速数据通道。</p>
+            <div class="btn-row" style="margin-bottom:14px">
+              <button class="btn primary" id="btnSyncQuick" disabled>立即对时</button>
+              <button class="btn" id="btnRefresh" disabled>刷新状态</button>
+              <button class="btn" id="btnPing" disabled>Ping</button>
+              <button class="btn danger" id="btnReboot" disabled>重启设备</button>
+            </div>
+            <div class="field" style="margin-bottom:14px">
+              <label>功能页切换</label>
+              <div class="seg" id="pageSeg">
+                <button data-p="0" disabled>设备信息</button>
+                <button data-p="1" disabled>时钟</button>
+                <button data-p="2" class="on" disabled>万年历</button>
+                <button data-p="3" disabled>图片模式</button>
+                <button data-p="4" disabled>目标提醒</button>
+                <button data-p="5" disabled>挪车电话</button>
+              </div>
+              <span class="hint">0 号设备信息页可看固件版本、面板尺寸、LP 时钟源与对时状态，右侧是微信赞赏码；5 号挪车页的号码在「挪车号码」页修改。OTA 或图片传输进行中时，设备会拒绝切页并回一条 WARN 日志。</span>
+            </div>
+            <div class="field">
+              <label>连接后自动对时</label>
+              <label class="chk"><input type="checkbox" id="autoSync" checked> 每次连接成功立即写入本机时间</label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>显示选项</h3>
+            <p class="sub">选项位会写进设备，立即触发一次重绘；断电不保存。</p>
+            <div class="btn-row" style="flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:16px">
+              <label class="chk"><input type="checkbox" id="optInvert" disabled> 整屏反色（黑底白字）</label>
+              <label class="chk"><input type="checkbox" id="optGrid" disabled> 显示月历网格</label>
+              <label class="chk"><input type="checkbox" id="optPartial" disabled> 允许局部刷新波形</label>
+            </div>
+            <div class="field">
+              <label>高考日期配置（默认 6 月 7 日起连考 3 天）</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-top:4px">
+                <input type="number" id="gkMonth" value="6" min="1" max="12" placeholder="月">
+                <input type="number" id="gkDay" value="7" min="1" max="31" placeholder="日">
+                <input type="number" id="gkDays" value="3" min="1" max="10" placeholder="天数">
+                <button class="btn" id="btnGaokao" disabled>应用</button>
+              </div>
+              <span class="hint">2020 年这类延期年份可运行时改到 7 月，无需重新编译固件。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>状态快照原始数据</h3>
+          <p class="sub">Console Status 特征值上报的 32 字节帧，逐字段解码。</p>
+          <dl class="kv" id="rawStatus"><dt>尚未收到</dt><dd>—</dd></dl>
+        </div>
+      </section>
+
+      <!-- ================= 对时 ================= -->
+      <section class="page" data-page="time">
+        <div class="grid g2">
+          <div class="card">
+            <h3>本机时间</h3>
+            <p class="sub">写入的是 UTC Unix 秒；设备按时区换算成本地时间显示。</p>
+            <div class="stat accent" style="margin-bottom:14px">
+              <div class="k">当前时刻</div>
+              <div class="v tabnum" id="hostClock" style="font-size:34px;letter-spacing:1px">--:--:--</div>
+              <div style="font-size:12px;color:var(--muted)" id="hostDate">—</div>
+            </div>
+            <dl class="kv" style="margin-bottom:16px">
+              <dt>Unix 秒</dt><dd id="hostUnix">—</dd>
+              <dt>时区</dt><dd id="hostTz">UTC+8</dd>
+            </dl>
+            <button class="btn primary" id="btnSync" disabled>同步到设备</button>
+          </div>
+
+          <div class="card">
+            <h3>晶振校准</h3>
+            <p class="sub">软件 RTC 靠 1 Hz tick 累加，ppm 补偿不需要浮点。例：每天快 2 秒 → ppm ≈ −23。</p>
+            <div class="field" style="margin-bottom:12px">
+              <label>每天误差（秒，快为正 / 慢为负）</label>
+              <input type="number" id="drift" value="0" step="0.1">
+            </div>
+            <div class="stat" style="margin-bottom:14px">
+              <div class="k">换算 ppm</div><div class="v tabnum" id="ppmCalc">0</div>
+            </div>
+            <div class="field">
+              <label>手动指定 ppm（−500 .. 500）</label>
+              <input type="number" id="ppmManual" value="0" min="-500" max="500">
+            </div>
+            <label class="chk" style="margin-top:10px"><input type="checkbox" id="useCalc" checked> 使用上面的换算结果</label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>手动对时</h3>
+          <p class="sub">留空则使用本机当前时间。时区范围 −12 .. +14，设备默认 UTC+8。</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:14px">
+            <div class="field"><label>Unix 秒（可选）</label><input type="number" id="manUnix" placeholder="留空 = 本机时间"></div>
+            <div class="field"><label>时区</label><input type="number" id="manTz" value="8" min="-12" max="14"></div>
+            <div class="field"><label>ppm</label><input type="number" id="manPpm" value="0" min="-500" max="500"></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" id="btnManualSync" disabled>写入时间</button>
+            <button class="btn" id="btnTimeQuery" disabled>读取设备时间</button>
+          </div>
+          <div class="notice">断电后软件 RTC 会丢失，重新连接时控制台可自动对时。若要把校准值持久化到 flash，
+            在固件里实现 <code>esl_rtc_io_t.save_cal/load_cal</code> 并调用 <code>esl_app_rtc_setup()</code>。</div>
+        </div>
+      </section>
+
+      <!-- ================= 挪车号码 ================= -->
+      <section class="page" data-page="parking">
+        <div class="card">
+          <h3>挪车号码 <span class="tag" id="phoneTag">未读取</span></h3>
+          <p class="sub">号码存在设备里，屏上 5 号「挪车联系」页只有三行字：标题条、放大到 2×3 的
+            号码牌、底部「临时停靠 请多关照」。支持 7..15 位数字，空格 / 连字符 / 括号随便敲，
+            设备会自动归一化成纯数字并排成 3-4-4 分组。</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:14px">
+            <div class="field">
+              <label>手机号</label>
+              <input type="text" id="parkPhone" maxlength="24" inputmode="tel"
+                     placeholder="例如 138 0013 8000 / 138-0013-8000" autocomplete="off">
+              <span class="hint" id="parkHint">本机记住的号码会在每次连接成功后自动补写一次。</span>
+            </div>
+            <div class="field">
+              <label>设备当前值</label>
+              <div class="stat"><div class="v sm tabnum" id="parkDevice">— 尚未读取 —</div></div>
+              <span class="hint">点「读取设备」可随时取回，返回值是设备归一化后的那一串。</span>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn primary" id="btnPhoneWrite" disabled>写入设备</button>
+            <button class="btn" id="btnPhoneRead" disabled>读取设备</button>
+            <button class="btn" id="btnPhonePage" disabled>切到挪车页（5）</button>
+            <button class="btn ghost" id="btnPhoneClear">清空输入</button>
+          </div>
+          <label class="chk" style="margin-top:12px"><input type="checkbox" id="autoPushPhone" checked>
+            每次连接成功后自动把本机记住的号码补写一次（设备没接 flash 时靠这个保号）</label>
+        </div>
+
+        <div class="card">
+          <h3>屏上效果预览</h3>
+          <p class="sub">按 212 × 104 横屏版式等比例放大 2 倍。整屏只有三行字，没有副标题和标签行，
+            号码牌独占 60 行高。实际墨水屏是 1bpp 黑白点阵，这里只示意排版与分组，字形以设备字库为准。</p>
+          <div class="preview-wrap">
+            <div class="pk-screen">
+              <div class="pk-canvas">
+                <div class="pk-bar pk-top"><span>挪车联系 <b>TEL</b></span><span class="pk-badge">P</span></div>
+                <div class="pk-plate unset" id="pkPlate"><span id="pkNumber">号码未设置 请连接上位机</span></div>
+                <div class="pk-bar pk-foot">临时停靠 请多关照</div>
+              </div>
+            </div>
+            <div class="pk-meta">
+              <dl>
+                <dt>写入帧</dt><dd>0x32 PHONE_SET · 20 B</dd>
+                <dt>读取帧</dt><dd>0xC3 PHONE · 32 B</dd>
+                <dt>归一化后</dt><dd id="pkNorm">—</dd>
+                <dt>屏上分组</dt><dd id="pkDisplay">—</dd>
+                <dt>持久化</dt><dd id="pkSaved">未知（先读取设备）</dd>
+              </dl>
+              <div class="notice" style="margin-top:14px">出厂时号码为空，挪车页显示「号码未设置 请连接上位机」，
+                不会编一个假号码。写入后设备立刻整屏重排；若平台层实现了
+                <code>esl_phone_io_t.save/load</code> 并调用 <code>esl_app_phone_setup()</code>，
+                号码掉电也不丢，0xC3 帧的持久化位会点亮。</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 图片 ================= -->
+      <section class="page" data-page="image">
+        <div class="grid g2">
+          <div class="card">
+            <h3>选择图片</h3>
+            <p class="sub">浏览器现场转 1bpp + RLE，不必先跑 Python 脚本；也可直接载入已生成的 .eslimg 包。</p>
+            <div class="drop" id="imgDrop">
+              <div class="big">▧</div>
+              <div class="t">点击选择或拖入图片</div>
+              <div class="d">PNG / JPG / WEBP / .eslimg · 自动缩放到面板尺寸</div>
+            </div>
+            <input type="file" id="imgFile" accept="image/*,.eslimg,.bin">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px">
+              <!-- 默认逻辑画布 = 横屏 212x104（物理 EPD RAM 104x212 由固件旋转）。 -->
+              <div class="field"><label>逻辑画布宽</label><input type="number" id="imW" value="212" min="64" max="800"></div>
+              <div class="field"><label>逻辑画布高</label><input type="number" id="imH" value="104" min="64" max="800"></div>
+              <div class="field"><label>编码</label><select id="imCodec">
+                <option value="1">RLE（推荐）</option><option value="0">原始位图</option>
+                <option value="2">XOR 差分 + RLE</option></select></div>
+              <div class="field"><label>阈值</label><input type="number" id="imTh" value="128" min="0" max="255"></div>
+            </div>
+            <div class="btn-row" style="margin-top:12px">
+              <label class="chk"><input type="checkbox" id="imDither" checked> Floyd–Steinberg 抖动</label>
+              <button class="btn sm" id="btnRecalc" disabled>重新生成</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>预览与估算</h3>
+            <p class="sub">1 = 黑，每行 MSB 在最左；预览为逻辑横屏画布 212×104，固件送屏前会旋转 90° 写入物理 104×212 RAM。</p>
+            <div class="preview-wrap">
+              <div class="epaper"><canvas id="preview" width="212" height="104"></canvas></div>
+              <div class="preview-meta">
+                <div class="grid" style="grid-template-columns:1fr 1fr;gap:9px" id="imgStats">
+                  <div class="stat"><div class="k">原始帧</div><div class="v sm" id="imRaw">—</div></div>
+                  <div class="stat"><div class="k">传输量</div><div class="v sm" id="imTx">—</div></div>
+                  <div class="stat"><div class="k">压缩率</div><div class="v sm" id="imRatio">—</div></div>
+                  <div class="stat"><div class="k">分包数</div><div class="v sm" id="imPkts">—</div></div>
+                </div>
+                <div class="foot-note" id="imEstimate">先选择一张图片。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>高速推送</h3>
+          <p class="sub">数据走 Write Without Response 纯字节流，零包头；Control 才用 With Response。</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px">
+            <div class="field"><label>包长</label><select id="imChunk">
+              <option value="244">244 B · DLE + MTU 247</option>
+              <option value="182">182 B · iOS MTU 185</option>
+              <option value="20">20 B · 默认 MTU 23</option></select></div>
+            <div class="field"><label>信用窗口</label><select id="imCredit">
+              <option value="4">4 包</option><option value="8" selected>8 包</option>
+              <option value="16">16 包</option></select></div>
+            <div class="field"><label>显示时长（秒，0 = 常驻）</label><input type="number" id="imHold" value="0" min="0" max="65535"></div>
+          </div>
+          <div class="bar-label"><span id="imProgText">等待推送</span><span id="imRate">—</span></div>
+          <div class="bar"><i id="imBar"></i></div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn primary" id="btnPushImg" disabled>推送并显示</button>
+            <button class="btn" id="btnResumeClock" disabled>切回万年历</button>
+            <button class="btn ghost" id="btnAbortImg" disabled>中止</button>
+          </div>
+          <div class="notice warn">XOR 差分的参考帧是设备<b>当前显示帧</b>。连续推图且中间没切回万年历时才有意义；
+            从日历切到图片请改用 RLE，否则画面会错位。</div>
+        </div>
+      </section>
+
+      <!-- ================= OTA ================= -->
+      <section class="page" data-page="ota">
+        <div class="card">
+          <h3>升级包</h3>
+          <p class="sub">用 <code>tools/ota_image.py</code> 生成的 .eslota；支持全量与扇区级差分。</p>
+          <div class="drop" id="otaDrop">
+            <div class="big">⇩</div>
+            <div class="t">点击选择或拖入 .eslota</div>
+            <div class="d">64 B START 帧 + 4096 B 对齐的扇区数据流</div>
+          </div>
+          <input type="file" id="otaFile" accept=".eslota,.bin">
+          <dl class="kv" style="margin-top:16px" id="otaInfo"><dt>尚未载入</dt><dd>—</dd></dl>
+        </div>
+
+        <div class="card">
+          <h3>传输参数</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px">
+            <div class="field"><label>初始包长</label><select id="otaChunk">
+              <option value="244">244 B · 最快</option><option value="182">182 B</option>
+              <option value="20">20 B</option></select></div>
+            <div class="field"><label>信用窗口</label><select id="otaCredit">
+              <option value="4" selected>4 扇区（16 KB）</option>
+              <option value="2">2 扇区（8 KB）</option>
+              <option value="1">1 扇区（4 KB，最稳）</option></select></div>
+          </div>
+          <div class="bar-label"><span id="otaProgText">等待升级</span><span id="otaRate">—</span></div>
+          <div class="bar"><i id="otaBar"></i></div>
+          <label class="chk" style="margin:14px 0"><input type="checkbox" id="otaConfirm">
+            我已用 J-Link 备份整片 SPI Flash（含 0x39000 板级记录）</label>
+          <div class="btn-row">
+            <button class="btn primary" id="btnPushOta" disabled>开始升级</button>
+            <button class="btn ghost" id="btnAbortOta" disabled>中止</button>
+          </div>
+          <div class="notice danger"><b>只写非运行 bank。</b> COMMIT 前目标 bank 的头恒为擦除态，
+            中途断电会继续启动旧固件；只有回读 CRC32 通过后才写 image header。
+            脚本绝不碰 <code>0x00000</code> bootloader、<code>0x38000</code> product header
+            和 <code>0x39000 / 0x3a000</code> 板级记录。</div>
+        </div>
+      </section>
+
+      <!-- ================= 日志 ================= -->
+      <section class="page" data-page="logs">
+        <div class="card">
+          <h3>运行日志 <span class="tag" id="logTag">0 条</span></h3>
+          <p class="sub">主机操作、设备事件（Console 0xC2 帧）、OTA / 图片传输状态统一记录。</p>
+          <div class="toolbar">
+            <div class="seg" id="logFilter">
+              <button data-f="all" class="on">全部</button>
+              <button data-f="INFO">信息</button>
+              <button data-f="WARN">警告</button>
+              <button data-f="ERROR">错误</button>
+              <button data-f="DEVICE">设备</button>
+            </div>
+            <input type="text" id="logQuery" placeholder="搜索日志…">
+            <button class="btn sm" id="btnClearLog">清空</button>
+            <button class="btn sm" id="btnExportLog">导出 .txt</button>
+            <button class="btn sm" id="btnCopyLog">复制</button>
+            <div class="counts" id="logCounts"></div>
+          </div>
+          <div style="max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:10px">
+            <table class="logtable"><thead><tr>
+              <th style="width:88px">时间</th><th style="width:62px">级别</th>
+              <th style="width:66px">来源</th><th>消息</th>
+            </tr></thead><tbody id="logBody"></tbody></table>
+            <div class="empty" id="logEmpty">暂无日志</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 关于 ================= -->
+      <section class="page" data-page="about">
+        <div class="card">
+          <h3>GATT 服务与特征值</h3>
+          <p class="sub">三个服务相互独立；控制台把它们的控制面收拢到一页。</p>
+          <table class="spec"><thead><tr><th>用途</th><th>UUID</th><th>属性</th></tr></thead><tbody id="uuidTable"></tbody></table>
+        </div>
+        <div class="grid g2">
+          <div class="card">
+            <h3>帧格式速查</h3>
+            <dl class="kv" style="grid-template-columns:96px 1fr">
+              <dt>Console Cmd</dt><dd>20 B：cmd / 'C1' / u32 / i16 / tz / u8 / 保留</dd>
+              <dt>Console Status</dt><dd>32 B：0xC1 + page + flags + unix + 面板 + ppm…</dd>
+              <dt>Console Event</dt><dd>32 B：0xC2 + level + code + seq + 27 B 文本</dd>
+              <dt>Console Phone</dt><dd>32 B：0xC3 + 长度 + 持久化位 + 16 B 号码</dd>
+              <dt>PHONE_SET</dt><dd>20 B：0x32 / 'C1' / 长度 / 16 B 号码（唯一复用保留字节的命令）</dd>
+              <dt>IMG START</dt><dd>64 B：'IMG1' + 宽高 + 帧长/流长/CRC32 + codec…</dd>
+              <dt>OTA START</dt><dd>64 B：'OTA1' + size/CRC/chunk/nsect/imageid/bitmap</dd>
+              <dt>数据通道</dt><dd>纯字节流，无包头；244 B/包，Write Without Response</dd>
+            </dl>
+          </div>
+          <div class="card">
+            <h3>使用与限制</h3>
+            <ul style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.9;color:var(--muted)">
+              <li>需 Chrome / Edge 桌面版，且通过 <code>localhost</code> 或 HTTPS 打开。</li>
+              <li>Web Bluetooth 不暴露 MTU；包长会在写入失败时自动降级 244 → 182 → 20。</li>
+              <li>DA14585 不支持 2M PHY，射频层只有 1M PHY + DLE 一条提速路径。</li>
+              <li>要跑满 244 B/包，中央设备与系统蓝牙栈都必须支持 DLE。</li>
+              <li>图片通道的端到端延迟主要来自 EPD 全刷 1~3 秒，不在空口。</li>
+              <li>固件侧仍需实现 <code>platform.h</code> 回调、屏驱动初始化序列与 LUT。</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <h3>固件侧待办清单</h3>
+          <div class="chips">
+            <span class="chip">J-Link 读整片 dump ≥ 0x3A010</span>
+            <span class="chip">实现 esl_platform_t 7 个回调</span>
+            <span class="chip">实现 esl_ota_io_t 6 个回调</span>
+            <span class="chip">按 UUID 建 GATT 库</span>
+            <span class="chip">DLE 251 / MTU 247 / CI 7.5 ms</span>
+            <span class="chip">填 EPD 初始化序列与 7/10 步 LUT</span>
+            <span class="chip">双 bank 构建同步</span>
+          </div>
+          <div class="foot-note">本页所有内容对应 <code>HM2.13/</code> 自建工程；未使用任何第三方项目的代码或波形数据。</div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="dock" id="dock">
+      <div class="dock-head" id="dockHead">
+        <span class="t">≡ 运行日志 <span class="chip" id="dockCount">0</span></span>
+        <span class="last" id="dockLast">准备就绪</span>
+        <div class="spacer"></div>
+        <button class="btn ghost sm" id="btnDockAll">查看全部</button>
+        <span style="color:var(--faint);font-size:11px" id="dockArrow">▲</span>
+      </div>
+      <div class="dock-body" id="dockBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================ 协议常量 */
+/* 固件把三条业务线并成一个 128 位服务（B1E5A000），特征只改 time_low
+ * 的低两字节：01 OTA 控制 / 02 OTA 数据 / 03 图像控制 / 04 图像数据 /
+ * 05 状态 / 06 对时 / 07 控制台命令。三组常量仍分开写，
+ * 是为了让下面的 resolveServices 保持「一组一角色」的结构，
+ * 但它们的 SVC 指向同一个服务，一次 service discovery 全部拿到。 */
+const UUID = {
+  CON_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  CON_CMD:'B1E5A007-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  CON_STA:'B1E5A005-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  OTA_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  OTA_CTRL:'B1E5A001-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  OTA_DATA:'B1E5A002-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  OTA_NTF:'B1E5A001-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  IMG_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  IMG_CTRL:'B1E5A003-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  IMG_DATA:'B1E5A004-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  IMG_NTF:'B1E5A003-6D1F-4C3A-9E2B-7A5C1D0F8E44',
+  TIME:'B1E5A006-6D1F-4C3A-9E2B-7A5C1D0F8E44'
+};
+const CMD = {TIME_SET:0x10,TIME_QUERY:0x11,STATUS:0x12,PAGE:0x20,
+             UI_OPTS:0x30,GAOKAO:0x31,PHONE_SET:0x32,PHONE_QUERY:0x33,
+             REBOOT:0x40,PING:0x7F};
+const UI_BIT = {INVERT:0x01,GRID:0x02,PARTIAL:0x04};
+const FLAG = {RTC:0x01,EPD:0x02,OTA:0x04,IMG:0x08,HOLD:0x10,
+              INVERT:0x20,GRID:0x40,PARTIAL:0x80};
+/* 状态帧第 31 字节的接线自检位，顺序与 app.h 的 ESL_APP_WIRE_* 一致。
+   位为 1 = 平台层在本次上电后确实把该接口接起来了；缺哪项设备就少哪个
+   功能，而且不会报错——所以主机侧要把它摆在明面上。 */
+const WIRE_NAMES = ['rtc','phone','ota','id','ntf','sleep'];
+/* 下标必须与 console.h 的 ESL_CON_PAGE_* 完全一致；6 是 OTA 系统页，
+   由传输状态自动切换，主机不能主动请求。 */
+const PAGE_NAME = ['设备信息','时钟','万年历','图片模式','目标提醒',
+                   '挪车电话','OTA 升级','启动中'];
+const CTRL_LEN = 64, CMD_LEN = 20, STATUS_LEN = 32;
+const PHONE_MAX = 16, PHONE_STORE = 'esl-phone';
+
+/* ============================================================ 全局状态 */
+const S = {
+  device:null, gatt:null, connected:false, busy:false,
+  svc:{con:null,ota:null,img:null},
+  ch:{conCmd:null,conSta:null,otaCtrl:null,otaData:null,otaNtf:null,
+      imgCtrl:null,imgData:null,imgNtf:null},
+  ready:{con:false,ota:false,img:false},
+  status:null,
+  otaNtfType:-1, otaWritten:0, imgNtfType:-1,
+  imageBitmap:null, imageFrame:null, imagePkg:null, lastFrame:null,
+  otaPkg:null, otaInfo:null,
+  devicePhone:'', phoneSaved:null,
+  logs:[], logFilter:'all', logQuery:'', logSeq:0,
+  page:'overview'
+};
+
+const $ = id => document.getElementById(id);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+function fmtBytes(n){
+  if(n===null||n===undefined) return '—';
+  return n<1024 ? n+' B' : n<1048576 ? (n/1024).toFixed(1)+' KB'
+                                     : (n/1048576).toFixed(2)+' MB';
+}
+function pad2(n){ return String(n).padStart(2,'0'); }
+function hhmmss(d){
+  return pad2(d.getHours())+':'+pad2(d.getMinutes())+':'+pad2(d.getSeconds());
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function u32le(v,a,i){ a[i]=v&255; a[i+1]=(v>>>8)&255; a[i+2]=(v>>>16)&255; a[i+3]=(v>>>24)&255; }
+function u16le(v,a,i){ a[i]=v&255; a[i+1]=(v>>>8)&255; }
+function rd32(a,i){ return (a[i]|a[i+1]<<8|a[i+2]<<16|a[i+3]<<24)>>>0; }
+function rd16(a,i){ return a[i]|a[i+1]<<8; }
+function rdI16(a,i){ const v=rd16(a,i); return v>32767 ? v-65536 : v; }
+
+/* CRC32 (zlib / ISO-HDLC)，与 Python zlib.crc32 完全一致 */
+function crc32(buf){
+  let c = 0xFFFFFFFF;
+  for(let i=0;i<buf.length;i++){
+    c ^= buf[i];
+    for(let k=0;k<8;k++) c = (c>>>1) ^ (0xEDB88320 & -(c&1));
+  }
+  return (c ^ 0xFFFFFFFF)>>>0;
+}
+/* [run:1B][value:1B]，run 1..255，与 make_image.py / img_stream.c 一致 */
+function rleEncode(data){
+  const out=[]; let i=0;
+  while(i<data.length){
+    const v=data[i]; let run=1;
+    while(i+run<data.length && data[i+run]===v && run<255) run++;
+    out.push(run,v); i+=run;
+  }
+  return Uint8Array.from(out);
+}
+
+/* ============================================================ 日志系统 */
+function log(level, src, msg){
+  const now=new Date();
+  const e={id:++S.logSeq,ts:now,level,src,msg:String(msg)};
+  S.logs.push(e);
+  if(S.logs.length>3000) S.logs.shift();
+  $('dockLast').textContent='['+hhmmss(now)+'] '+level+' · '+msg;
+  $('dockCount').textContent=S.logs.length;
+  $('navBadge').textContent=S.logs.filter(x=>x.level==='ERROR'||x.level==='WARN').length;
+  $('navBadge').style.display=S.logs.filter(x=>x.level==='ERROR'||x.level==='WARN').length?'':'none';
+  renderDock();
+  if(S.page==='logs') renderLogTable();
+  if(S.logs.length===1) log('DEBUG','HOST','日志系统就绪');
+}
+/* 级别颜色按真实级别显示；来源列单独标 DEVICE，避免 WARN/ERROR 被吞掉。 */
+function levelOf(e){ return e.level; }
+function filtered(){
+  const q=S.logQuery.toLowerCase();
+  return S.logs.filter(e=>{
+    if(S.logFilter==='DEVICE') return e.src==='DEVICE';
+    if(S.logFilter!=='all' && e.level!==S.logFilter) return false;
+    return !q || (e.msg+' '+e.src).toLowerCase().includes(q);
+  });
+}
+function lineHTML(e, table){
+  const lv=levelOf(e);
+  const ts=table ? hhmmss(e.ts)+'.'+String(e.ts.getMilliseconds()).padStart(3,'0')
+                 : hhmmss(e.ts);
+  return '<span class="ts">'+esc(ts)+'</span>'+
+         '<span class="lv '+lv+'">'+lv+'</span>'+
+         '<span class="src">'+esc(e.src)+'</span>'+
+         '<span class="msg">'+esc(e.msg)+'</span>';
+}
+function renderDock(){
+  const rows=S.logs.slice(-14).reverse();
+  $('dockBody').innerHTML = rows.length
+    ? rows.map(e=>'<div class="logline">'+lineHTML(e,false)+'</div>').join('')
+    : '<div class="empty">暂无日志</div>';
+}
+function renderLogTable(){
+  const rows=filtered().slice().reverse();
+  $('logBody').innerHTML=rows.map(e=>'<tr class="logline" style="display:table-row">'+
+    '<td>'+esc(hhmmss(e.ts)+'.'+String(e.ts.getMilliseconds()).padStart(3,'0'))+'</td>'+
+    '<td class="lv '+levelOf(e)+'">'+levelOf(e)+'</td>'+
+    '<td>'+esc(e.src)+'</td><td>'+esc(e.msg)+'</td></tr>').join('');
+  $('logEmpty').style.display=rows.length?'none':'block';
+  $('logTag').textContent=S.logs.length+' 条';
+  const c={INFO:0,WARN:0,ERROR:0,DEBUG:0,DEVICE:0};
+  S.logs.forEach(e=>{ c[e.level]++; if(e.src==='DEVICE') c.DEVICE++; });
+  $('logCounts').innerHTML='<span>INFO <b>'+c.INFO+'</b></span><span>WARN <b>'+c.WARN+
+    '</b></span><span>ERROR <b>'+c.ERROR+'</b></span><span>设备 <b>'+c.DEVICE+'</b></span>';
+}
+function exportLogs(){
+  const txt=S.logs.map(e=>
+    e.ts.toISOString()+'  '+e.level.padEnd(6)+'  '+e.src.padEnd(8)+'  '+e.msg).join('\n');
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='esl-console-'+new Date().toISOString().slice(0,19).replace(/:/g,'-')+'.txt';
+  a.click(); URL.revokeObjectURL(a.href);
+  log('INFO','HOST','导出 '+S.logs.length+' 条日志');
+}
+
+/* ============================================================ 导航 / 主题 */
+const TITLES={
+  overview:['总览与设备','连接状态 / 快捷操作'],
+  time:['对时与校准','软件 RTC / ppm 补偿'],
+  parking:['挪车号码','5 号功能页 / 上位机可改'],
+  image:['图片显示','现场转码 / 高速推送'],
+  ota:['固件升级 OTA','双 bank 原子提交'],
+  logs:['运行日志','主机 + 设备事件'],
+  about:['协议与说明','GATT / 帧格式 / 待办']
+};
+function switchPage(name){
+  S.page=name;
+  $$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));
+  $$('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  $('pageTitle').textContent=TITLES[name][0];
+  $('pageCrumb').textContent=TITLES[name][1];
+  if(name==='logs') renderLogTable();
+  document.querySelector('.content').scrollTop=0;
+}
+function toggleTheme(){
+  const dark=document.documentElement.dataset.theme==='dark';
+  document.documentElement.dataset.theme=dark?'light':'dark';
+  localStorage.setItem('esl-theme',dark?'light':'dark');
+  log('DEBUG','HOST','主题切换为 '+(dark?'浅色':'深色'));
+}
+function buildUuidTable(){
+  const rows=[
+    ['主服务',UUID.CON_SVC,'广播过滤用这一条'],
+    ['├ OTA Control',UUID.OTA_CTRL,'Write With Response + Notify'],
+    ['├ OTA Data',UUID.OTA_DATA,'Write Without Response'],
+    ['├ 图像 Control',UUID.IMG_CTRL,'Write With Response + Notify'],
+    ['├ 图像 Data',UUID.IMG_DATA,'Write Without Response'],
+    ['├ 状态 Status',UUID.CON_STA,'Notify + Read'],
+    ['├ 控制台 Command',UUID.CON_CMD,'Write With Response'],
+    ['└ 对时 Time',UUID.TIME,'Read + Write（8 字节）']
+  ];
+  $('uuidTable').innerHTML=rows.map(r=>
+    '<tr><td>'+esc(r[0])+'</td><td class="mono">'+r[1]+'</td><td>'+esc(r[2])+'</td></tr>').join('');
+}
+
+/* ============================================================ 连接管理 */
+function setConnected(on){
+  S.connected=on;
+  $('connPill').className='pill '+(on?'on':'off');
+  $('connText').textContent=on?(S.device&&S.device.name?S.device.name:'已连接'):'未连接';
+  $('btnConnect').textContent=on?'断开连接':'连接设备';
+  const ids=['btnSyncQuick','btnRefresh','btnPing','btnReboot','btnSync','btnManualSync',
+             'btnTimeQuery','btnGaokao','btnResumeClock','btnTimeQuery',
+             'btnPhoneWrite','btnPhoneRead','btnPhonePage'];
+  ids.forEach(id=>{ const e=$(id); if(e) e.disabled=!on||!S.ready.con; });
+  $('pageSeg').querySelectorAll('button').forEach(b=>b.disabled=!on||!S.ready.con);
+  ['optInvert','optGrid','optPartial'].forEach(id=>$(id).disabled=!on||!S.ready.con);
+  $('btnPushImg').disabled=!on||!S.ready.img||!S.imagePkg;
+  $('btnPushOta').disabled=!on||!S.ready.ota||!S.otaPkg;
+  $('btnAbortImg').disabled=!on||!S.ready.img;
+  $('btnAbortOta').disabled=!on||!S.ready.ota;
+  $('btnRecalc').disabled=!S.imageBitmap;
+  updateSvcPill();
+}
+function updateSvcPill(){
+  const n=['con','ota','img'].filter(k=>S.ready[k]).length;
+  $('svcText').textContent=n+' / 3 个服务就绪';
+  $('svcPill').className='pill '+(n===3?'on':n?'':'off');
+  $('svcChips').innerHTML=['con','ota','img'].map(k=>{
+    const label={con:'Console',ota:'OTA',img:'Image'}[k];
+    return '<span class="chip '+(S.ready[k]?'on':'off')+'">'+label+' '+(S.ready[k]?'✓':'—')+'</span>';
+  }).join('');
+}
+async function resolveServices(){
+  const server=S.gatt;
+  const jobs=[
+    ['con',UUID.CON_SVC,async svc=>{
+      S.svc.con=svc;
+      S.ch.conCmd=await svc.getCharacteristic(UUID.CON_CMD);
+      S.ch.conSta=await svc.getCharacteristic(UUID.CON_STA);
+    }],
+    ['ota',UUID.OTA_SVC,async svc=>{
+      S.svc.ota=svc;
+      S.ch.otaCtrl=await svc.getCharacteristic(UUID.OTA_CTRL);
+      S.ch.otaData=await svc.getCharacteristic(UUID.OTA_DATA);
+      S.ch.otaNtf =await svc.getCharacteristic(UUID.OTA_NTF);
+    }],
+    ['img',UUID.IMG_SVC,async svc=>{
+      S.svc.img=svc;
+      S.ch.imgCtrl=await svc.getCharacteristic(UUID.IMG_CTRL);
+      S.ch.imgData=await svc.getCharacteristic(UUID.IMG_DATA);
+      S.ch.imgNtf =await svc.getCharacteristic(UUID.IMG_NTF);
+    }]
+  ];
+  for(const [key,uuid,fn] of jobs){
+    try{ const svc=await server.getPrimaryService(uuid); await fn(svc); S.ready[key]=true;
+         log('INFO','HOST',key.toUpperCase()+' 服务就绪'); }
+    catch(err){ S.ready[key]=false;
+         log('WARN','HOST',key.toUpperCase()+' 服务不可用：'+err.message); }
+  }
+  /* 订阅各服务 notify */
+  if(S.ready.con && S.ch.conSta){
+    await S.ch.conSta.startNotifications();
+    S.ch.conSta.addEventListener('characteristicvaluechanged',onConsoleNotify);
+  }
+  if(S.ready.ota && S.ch.otaNtf){
+    await S.ch.otaNtf.startNotifications();
+    S.ch.otaNtf.addEventListener('characteristicvaluechanged',onOtaNotify);
+  }
+  if(S.ready.img && S.ch.imgNtf){
+    await S.ch.imgNtf.startNotifications();
+    S.ch.imgNtf.addEventListener('characteristicvaluechanged',onImgNotify);
+  }
+  updateSvcPill();
+}
+async function connect(){
+  if(!navigator.bluetooth) throw new Error('浏览器不支持 Web Bluetooth，请用 Chrome / Edge');
+  const dev=await navigator.bluetooth.requestDevice({
+    /* 三组常量指向同一个服务，filters 里只写一条，重复项在某些
+     * Chrome 版本上会让 requestDevice 直接抛 InvalidStateError。 */
+    filters:[{services:[UUID.CON_SVC]}],
+    optionalServices:[UUID.CON_SVC]
+  });
+  S.device=dev;
+  dev.addEventListener('gattserverdisconnected',onDisconnected);
+  log('INFO','HOST','正在连接 '+(dev.name||dev.id));
+  S.gatt=await dev.gatt.connect();
+  await resolveServices();
+  setConnected(true);
+  if(!S.ready.con) log('WARN','HOST','Console 服务缺失：对时与状态查询不可用');
+  if(S.ready.con){
+    await sendCmd(CMD.STATUS);
+    if($('autoSync').checked && S.page!=='ota') await syncTime();
+    if($('autoPushPhone').checked) await autoPushPhone();
+  }
+}
+function onDisconnected(){
+  log('WARN','DEVICE','GATT 连接断开');
+  S.ready={con:false,ota:false,img:false};
+  S.ch={conCmd:null,conSta:null,otaCtrl:null,otaData:null,otaNtf:null,
+        imgCtrl:null,imgData:null,imgNtf:null};
+  S.status=null;
+  setConnected(false);
+}
+function disconnect(){
+  if(S.gatt && S.connected){ S.gatt.disconnect(); }
+  else onDisconnected();
+}
+
+/* ============================================================ Console 协议 */
+function buildCmd(id,a32,ai16,tz,au8){
+  const b=new Uint8Array(CMD_LEN);
+  b[0]=id; b[1]=0x43; b[2]=0x31;           /* 'C1' */
+  u32le(a32>>>0,b,3);
+  u16le(ai16&0xFFFF,b,7);
+  b[9]=tz&0xFF; b[10]=au8;                 /* 11..19 保持 0 */
+  return b;
+}
+async function sendCmd(id,a32,ai16,tz,au8,label){
+  if(!S.ready.con||!S.ch.conCmd) throw new Error('Console 服务未就绪');
+  const t=(tz===undefined)?8:tz;
+  const frame=buildCmd(id,a32||0,ai16||0,t,au8||0);
+  await S.ch.conCmd.writeValueWithResponse(frame);
+  if(label) log('DEBUG','HOST',label);
+  return frame;
+}
+function onConsoleNotify(ev){
+  const v=new Uint8Array(ev.target.value.buffer);
+  if(v.length<STATUS_LEN) return;
+  if(v[0]===0xC1) applyStatus(v);
+  else if(v[0]===0xC3) applyPhoneFrame(v);
+  else if(v[0]===0xC2){
+    const names=['DEBUG','INFO','WARN','ERROR'];
+    const lv=names[v[1]&3]||'INFO';
+    let text=''; for(let i=5;i<32 && v[i];i++) text+=String.fromCharCode(v[i]);
+    log(lv,'DEVICE',(text||'event')+' (code 0x'+v[2].toString(16).padStart(2,'0')+')');
+  }
+}
+function applyStatus(v){
+  const flags=v[3];
+  const st={
+    proto:v[1], page:v[2], flags,
+    unix:rd32(v,4), width:rd16(v,8), height:rd16(v,10),
+    ppm:rdI16(v,12), tz:(v[14]>127?v[14]-256:v[14]), err:v[15],
+    version:'', uptime:rd32(v,24), seq:rd16(v,28), imageid:v[30], wire:v[31]
+  };
+  for(let i=16;i<24 && v[i];i++) st.version+=String.fromCharCode(v[i]);
+  S.status=st;
+  $('statusTag').textContent='已同步';
+  $('sPanel').textContent=st.width+' × '+st.height;
+  $('sVersion').textContent=st.version||'—';
+  const d=new Date(st.unix*1000);
+  $('sDevTime').textContent=isNaN(d.getTime())?'—':hhmmss(d);
+  $('sPage').textContent=PAGE_NAME[st.page]||('未知 '+st.page);
+  $('sRtc').textContent=(flags&FLAG.RTC)?'已对时':'未对时';
+  $('sCal').textContent=st.ppm+' ppm · UTC'+(st.tz>=0?'+':'')+st.tz;
+  $('sUptime').textContent=(st.uptime/1000).toFixed(1)+' s';
+  $('sImageid').textContent=st.imageid;
+  /* 接线自检：第 31 字节的 6 个位。缺哪项就显示 '-'，一眼看出平台层
+   * 有没有把可选接口接上（固件侧也会在首次写入时推一条 code 0x40 的日志）。 */
+  $('sWire').textContent=WIRE_NAMES.map((k,i)=>(st.wire&(1<<i))?k:'-').join(' ');
+  $('pageSeg').querySelectorAll('button').forEach(b=>
+    b.classList.toggle('on',Number(b.dataset.p)===st.page));
+  $('optInvert').checked=!!(flags&FLAG.INVERT);
+  $('optGrid').checked=!!(flags&FLAG.GRID);
+  $('optPartial').checked=!!(flags&FLAG.PARTIAL);
+  const rows=[
+    ['proto / page',st.proto+' / '+st.page+' ('+(PAGE_NAME[st.page]||'?')+')'],
+    ['flags','0x'+flags.toString(16).padStart(2,'0')+'  '+
+      ['RTC','EPD','OTA','IMG','HOLD','INV','GRID','PART'].filter((_,i)=>flags&(1<<i)).join(' ')],
+    ['unix',st.unix+'  ('+new Date(st.unix*1000).toISOString()+')'],
+    ['panel',st.width+' x '+st.height+'  frame '+Math.ceil(st.width/8)*st.height+' B'],
+    ['ppm / tz',st.ppm+' / '+st.tz],
+    ['last_error','0x'+st.err.toString(16).padStart(2,'0')],
+    ['version',st.version||'—'],
+    ['uptime / seq / imageid',st.uptime+' ms / '+st.seq+' / '+st.imageid],
+    ['wire (byte 31)','0x'+st.wire.toString(16).padStart(2,'0')+'  '+
+      WIRE_NAMES.map((k,i)=>((st.wire&(1<<i))?k:'-')).join(' ')]
+  ];
+  $('rawStatus').innerHTML=rows.map(r=>'<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>').join('');
+  log('DEBUG','DEVICE','状态快照 page='+st.page+' rtc='+!!(flags&FLAG.RTC)+
+      ' panel='+st.width+'x'+st.height);
+  /* 面板尺寸自动同步到图片页 */
+  if(st.width>=64&&st.height>=64){ $('imW').value=st.width; $('imH').value=st.height; }
+}
+async function refreshStatus(){ await sendCmd(CMD.STATUS,0,0,8,0,'请求状态快照'); }
+async function syncTime(unix,ppm,tz){
+  const u=unix!==undefined?unix:Math.floor(Date.now()/1000);
+  const p=ppm!==undefined?ppm:currentPpm();
+  const t=tz!==undefined?tz:Number($('manTz').value||8);
+  await sendCmd(CMD.TIME_SET,u,p,t,0,
+    '写入时间 unix='+u+' ppm='+p+' tz='+t);
+  log('INFO','HOST','对时完成 '+new Date(u*1000).toLocaleString('zh-CN'));
+}
+function currentPpm(){
+  if($('useCalc').checked) return Math.round(Number($('ppmCalc').textContent)||0);
+  return Math.round(Number($('ppmManual').value)||0);
+}
+function calcPpm(){
+  const drift=Number($('drift').value)||0;
+  const ppm=Math.round(-drift*1000000/86400);
+  $('ppmCalc').textContent=Math.max(-500,Math.min(500,ppm));
+}
+async function setPage(p){
+  await sendCmd(CMD.PAGE,0,0,8,p,'切换功能页 -> '+(PAGE_NAME[p]||p));
+}
+async function setUiOpts(){
+  let bits=0;
+  if($('optInvert').checked) bits|=UI_BIT.INVERT;
+  if($('optGrid').checked) bits|=UI_BIT.GRID;
+  if($('optPartial').checked) bits|=UI_BIT.PARTIAL;
+  await sendCmd(CMD.UI_OPTS,0,0,8,bits,'显示选项 0x'+bits.toString(16));
+}
+async function setGaokao(){
+  const m=Number($('gkMonth').value),d=Number($('gkDay').value),n=Number($('gkDays').value);
+  const a=((m<<16)|(d<<8)|n)>>>0;
+  await sendCmd(CMD.GAOKAO,a,0,8,0,'高考日期 '+m+'/'+d+' 连考 '+n+' 天');
+}
+
+/* ============================================================ 挪车号码
+ * 与固件 phone.c 的 esl_phone_normalize() / ui.c 的 park_format() 是同一套
+ * 规则；check_protocols.py 会在 Node 里直接跑 buildPhoneCmd 校验帧布局。 */
+function normalizePhone(raw){
+  let out='', digits=0;
+  for(const ch of String(raw||'')){
+    if(ch>='0'&&ch<='9'){ out+=ch; digits++; }
+    else if(ch==='+'){ if(out.length) return null; out+='+'; }
+    else if(' -().'.indexOf(ch)>=0){ continue; }
+    else return null;
+  }
+  if(!out||out.length>PHONE_MAX||digits<7||digits>15) return null;
+  return out;
+}
+function formatPhone(digits){
+  if(digits&&digits.length===11&&digits[0]==='1')
+    return digits.slice(0,3)+' '+digits.slice(3,7)+' '+digits.slice(7);
+  return digits||'';
+}
+/* PHONE_SET 扩展帧：0=0x32, 1..2='C1', 3=长度, 4..19=归一化号码 ASCII。
+ * 20 B 定长，默认 MTU 23 下一次带响应写即可完成，不需要分片。 */
+function buildPhoneCmd(raw){
+  const norm=normalizePhone(raw)||'';
+  const b=new Uint8Array(CMD_LEN);
+  b[0]=CMD.PHONE_SET; b[1]=0x43; b[2]=0x31;
+  b[3]=norm.length;
+  for(let i=0;i<norm.length;i++) b[4+i]=norm.charCodeAt(i)&0xFF;
+  return b;
+}
+function updatePhonePreview(){
+  const raw=$('parkPhone').value.trim();
+  const norm=normalizePhone(raw);
+  const plate=$('pkPlate'), num=$('pkNumber');
+  if(norm){
+    num.textContent=formatPhone(norm);
+    plate.classList.remove('unset');
+    $('pkNorm').textContent=norm;
+    $('pkDisplay').textContent=formatPhone(norm);
+    $('parkHint').textContent='格式有效：'+norm.length+' 个字符，点击「写入设备」下发。';
+  }else{
+    num.textContent='号码未设置 请连接上位机';
+    plate.classList.add('unset');
+    $('pkNorm').textContent='—';
+    $('pkDisplay').textContent='—';
+    $('parkHint').textContent=raw
+      ? '号码不合法：只允许数字、一个前导 + 与空格/-/() 分隔符，位数 7..15。'
+      : '本机记住的号码会在每次连接成功后自动补写一次。';
+  }
+}
+function applyPhoneFrame(v){
+  const n=Math.min(v[1]||0,PHONE_MAX);
+  let s=''; for(let i=0;i<n;i++) s+=String.fromCharCode(v[3+i]);
+  S.devicePhone=s;
+  S.phoneSaved=!!(v[2]&1);
+  $('parkDevice').textContent=s?formatPhone(s)+'  ('+s+')':'设备未设置号码';
+  $('pkSaved').textContent=s
+    ?(S.phoneSaved?'已持久化到 flash（掉电不丢）':'仅存 RAM（靠上位机重连补写）')
+    :'—';
+  $('phoneTag').textContent=s?'已同步':'未设置';
+  if(!$('parkPhone').value.trim()&&s){
+    $('parkPhone').value=formatPhone(s);
+    updatePhonePreview();
+  }
+  log('INFO','DEVICE','号码帧 0xC3 '+(s||'(空)')+' 持久化='+S.phoneSaved);
+}
+async function writePhone(silent){
+  if(!S.ready.con||!S.ch.conCmd) throw new Error('Console 服务未就绪');
+  const norm=normalizePhone($('parkPhone').value);
+  if(!norm) throw new Error('号码不合法：需要 7..15 位数字');
+  await S.ch.conCmd.writeValueWithResponse(buildPhoneCmd(norm));
+  localStorage.setItem(PHONE_STORE,norm);
+  if(!silent) log('INFO','HOST','写入挪车号码 '+formatPhone(norm)+'（20 B PHONE_SET）');
+  return norm;
+}
+async function readPhone(){
+  await sendCmd(CMD.PHONE_QUERY,0,0,8,0,'读取挪车号码');
+}
+/* 设备没接 flash 时号码掉电即丢。上位机把它记在 localStorage，
+ * 每次连接成功自动补写一次 —— 与「连接后自动对时」是同一套兜底。 */
+async function autoPushPhone(){
+  try{
+    const remembered=localStorage.getItem(PHONE_STORE)||'';
+    if(!remembered) return;
+    if(!$('parkPhone').value.trim()){
+      $('parkPhone').value=formatPhone(remembered);
+      updatePhonePreview();
+    }
+    await writePhone(true);
+    log('INFO','HOST','连接后自动补写挪车号码 '+formatPhone(remembered));
+  }catch(e){ log('WARN','HOST','自动补写挪车号码失败：'+e.message); }
+}
+
+/* ============================================================ 图片生成 */
+function toFrame(bitmap,w,h,dither,threshold){
+  const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+  ctx.drawImage(bitmap,0,0,w,h);
+  const px=ctx.getImageData(0,0,w,h).data;
+  const lum=new Float32Array(w*h);
+  for(let i=0;i<w*h;i++) lum[i]=0.299*px[i*4]+0.587*px[i*4+1]+0.114*px[i*4+2];
+  if(dither){
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const i=y*w+x, old=lum[i], nw=old<threshold?0:255, err=old-nw;
+      lum[i]=nw;
+      const put=(xx,yy,f)=>{ if(xx>=0&&xx<w&&yy<h) lum[yy*w+xx]+=err*f; };
+      put(x+1,y,7/16); put(x-1,y+1,3/16); put(x,y+1,5/16); put(x+1,y+1,1/16);
+    }
+  }
+  const stride=Math.ceil(w/8);
+  const frame=new Uint8Array(stride*h);
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++)
+    if(lum[y*w+x]<threshold) frame[y*stride+(x>>3)] |= 0x80>>(x&7);
+  return frame;
+}
+function drawPreview(frame,w,h){
+  const cv=$('preview'); cv.width=w; cv.height=h;
+  const ctx=cv.getContext('2d');
+  const img=ctx.createImageData(w,h);
+  const stride=Math.ceil(w/8);
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const bit=(frame[y*stride+(x>>3)]>>(7-(x&7)))&1;
+    const v=bit?26:250, i=(y*w+x)*4;
+    img.data[i]=v; img.data[i+1]=v; img.data[i+2]=v; img.data[i+3]=255;
+  }
+  ctx.putImageData(img,0,0);
+  /* 按可用宽高等比放大：横屏 212x104 放大到 424x208，
+     竖屏 122x250 也限制在 260px 高以内，避免撑破卡片。 */
+  const s=Math.min(424/w,260/h,3);
+  cv.style.width=Math.max(1,Math.round(w*s))+'px';
+  cv.style.height=Math.max(1,Math.round(h*s))+'px';
+}
+function buildImagePkg(frame,w,h,codec,chunk,hold){
+  const stride=Math.ceil(w/8), fb=stride*h;
+  if(frame.length!==fb) throw new Error('帧长度不符：'+frame.length+' vs '+fb);
+  let stream;
+  if(codec===0) stream=frame;
+  else{
+    let base=frame;
+    if(codec===2){
+      const ref=S.lastFrame&&S.lastFrame.length===fb?S.lastFrame:new Uint8Array(fb).fill(0xFF);
+      base=Uint8Array.from(frame,(b,i)=>b^ref[i]);
+    }
+    stream=rleEncode(base);
+  }
+  const ctrl=new Uint8Array(CTRL_LEN);
+  ctrl[0]=0xA1; ctrl[1]=73; ctrl[2]=77; ctrl[3]=71; ctrl[4]=49;  /* IMG1 */
+  u16le(w,ctrl,5); u16le(h,ctrl,7);
+  u32le(fb,ctrl,9); u32le(stream.length,ctrl,13);
+  u32le(crc32(frame),ctrl,17);
+  ctrl[21]=codec; ctrl[22]=chunk; u16le(hold,ctrl,23);
+  const ver='ESL-WEB-1';
+  for(let i=0;i<ver.length&&i<16;i++) ctrl[25+i]=ver.charCodeAt(i);
+  const pkg=new Uint8Array(CTRL_LEN+stream.length);
+  pkg.set(ctrl,0); pkg.set(stream,CTRL_LEN);
+  return {pkg,stream,frame,fb,w,h,codec,chunk,hold};
+}
+function regenerate(){
+  if(!S.imageBitmap) return;
+  const w=Number($('imW').value),h=Number($('imH').value);
+  if(!(w>=64&&h>=64&&w<=800&&h<=800)){ log('WARN','HOST','面板尺寸超出范围'); return; }
+  const codec=Number($('imCodec').value),chunk=Number($('imChunk').value);
+  const hold=Number($('imHold').value)||0;
+  const frame=toFrame(S.imageBitmap,w,h,$('imDither').checked,Number($('imTh').value));
+  const r=buildImagePkg(frame,w,h,codec,chunk,hold);
+  S.imageFrame=frame; S.imagePkg=r.pkg;
+  drawPreview(frame,w,h);
+  $('imRaw').textContent=fmtBytes(r.fb);
+  $('imTx').textContent=fmtBytes(r.stream.length);
+  $('imRatio').textContent=(100*r.stream.length/r.fb).toFixed(1)+' %';
+  const chunkNow=Number($('imChunk').value);
+  const pkts=Math.ceil(r.stream.length/chunkNow);
+  $('imPkts').textContent=pkts;
+  const air=pkts*0.0075/2/0.5;
+  $('imEstimate').textContent='约 '+pkts+' 包，空口 ~'+air.toFixed(2)+' s；'+
+    '含 EPD 全刷约 '+(air+0.05+1.8).toFixed(2)+' s（局部刷新可到 ~'+(air+0.45).toFixed(2)+' s）。';
+  $('btnPushImg').disabled=!S.connected||!S.ready.img;
+  log('INFO','HOST','生成图片包 '+w+'x'+h+' '+fmtBytes(r.stream.length)+
+      '（'+['raw','rle','xor+rle'][codec]+'）');
+}
+function loadImageFile(file){
+  if(!file) return;
+  const isPkg=/\.(eslimg|bin)$/i.test(file.name);
+  file.arrayBuffer().then(buf=>{
+    const u=new Uint8Array(buf);
+    if(isPkg){
+      if(u.length<CTRL_LEN+1 || u[0]!==0xA1 || String.fromCharCode(...u.slice(1,5))!=='IMG1')
+        throw new Error('不是有效的 IMG1 包');
+      S.imagePkg=u; S.imageFrame=null; S.imageBitmap=null;
+      const w=rd16(u,5),h=rd16(u,7),fb=rd32(u,9),tx=rd32(u,13);
+      $('imW').value=w; $('imH').value=h;
+      $('imRaw').textContent=fmtBytes(fb);
+      $('imTx').textContent=fmtBytes(tx);
+      $('imRatio').textContent=(100*tx/fb).toFixed(1)+' %';
+      $('imPkts').textContent=Math.ceil(tx/Number($('imChunk').value));
+      $('imEstimate').textContent='已载入现成 .eslimg，直接推送即可。';
+      $('btnPushImg').disabled=!S.connected||!S.ready.img;
+      $('btnRecalc').disabled=true;
+      log('INFO','HOST','载入 '+file.name+' '+fmtBytes(u.length)+' · '+w+'x'+h);
+    }else{
+      const blob=new Blob([buf],{type:file.type});
+      createImageBitmap(blob).then(bmp=>{
+        S.imageBitmap=bmp; S.imagePkg=null;
+        log('INFO','HOST','载入图片 '+file.name+' ('+bmp.width+'x'+bmp.height+')');
+        regenerate();
+      }).catch(e=>log('ERROR','HOST','图片解码失败：'+e.message));
+    }
+  }).catch(e=>log('ERROR','HOST','读取文件失败：'+e.message));
+}
+function onImgNotify(ev){
+  const v=new Uint8Array(ev.target.value.buffer);
+  if(v.length<8) return;
+  S.imgNtfType=v[0];
+  const names=['READY','CHUNK','DONE','ERROR'];
+  const recv=rd32(v,1);
+  if(v[0]===3) log('ERROR','IMG','设备报错 code='+v[7]+' @ '+recv+' B');
+  else if(v[0]===2) log('INFO','IMG','设备确认完成，共 '+recv+' B');
+  else if(v[0]===1) log('DEBUG','IMG','进度 '+v[5]+'% ('+recv+' B)');
+  else log('DEBUG','IMG','READY');
+}
+async function pushImage(){
+  if(!S.imagePkg||!S.ready.img||S.busy) return;
+  S.busy=true; $('btnPushImg').disabled=true;
+  const chunk=Number($('imChunk').value), win=Number($('imCredit').value);
+  const hold=Number($('imHold').value)||0;
+  let pkg=S.imagePkg;
+  /* 现场生成的包需要用当前参数刷新 START 里的 chunk / hold */
+  if(S.imageFrame){
+    pkg=S.imagePkg.slice();
+    pkg[22]=chunk; u16le(hold,pkg,23);
+  }
+  const start=pkg.slice(0,CTRL_LEN), stream=pkg.slice(CTRL_LEN);
+  const t0=performance.now(); S.imgNtfType=-1;
+  $('imBar').parentElement.classList.remove('ok');
+  try{
+    await S.ch.imgCtrl.writeValueWithResponse(start);
+    log('INFO','IMG','START 已确认，'+chunk+' B/包 × '+win+' 包窗口，共 '+stream.length+' B');
+    let pending=[],off=0,used=chunk;
+    while(off<stream.length){
+      const part=stream.slice(off,Math.min(off+used,stream.length));
+      try{ await S.ch.imgData.writeValueWithoutResponse(part); }
+      catch(e){
+        if(used>182){ used=182; log('WARN','IMG','写入失败，包长降为 182 B'); continue; }
+        if(used>20){ used=20; log('WARN','IMG','写入失败，包长降为 20 B'); continue; }
+        throw e;
+      }
+      off+=part.length;
+      pending.push(Promise.resolve());
+      if(pending.length>=win){ await Promise.all(pending.splice(0)); }
+      const dt=(performance.now()-t0)/1000;
+      $('imBar').style.width=(100*off/stream.length).toFixed(1)+'%';
+      $('imProgText').textContent=fmtBytes(off)+' / '+fmtBytes(stream.length);
+      $('imRate').textContent=(off/1024/Math.max(dt,.001)).toFixed(1)+' KB/s';
+    }
+    await Promise.all(pending);
+    await S.ch.imgCtrl.writeValueWithResponse(new Uint8Array([0xA2]));
+    const dt=(performance.now()-t0)/1000;
+    $('imBar').style.width='100%';
+    $('imBar').parentElement.classList.add('ok');
+    $('imProgText').textContent='已提交 · '+dt.toFixed(2)+' s';
+    log('INFO','IMG','COMMIT 完成，空口 '+dt.toFixed(2)+' s（不含 EPD 刷新）');
+    if(S.imageFrame) S.lastFrame=S.imageFrame.slice();
+  }catch(err){
+    log('ERROR','IMG','推送失败：'+err.message+'，可尝试降低包长');
+    $('imProgText').textContent='推送失败';
+    try{ await S.ch.imgCtrl.writeValueWithResponse(new Uint8Array([0xA3])); }catch(_){}
+  }finally{ S.busy=false; $('btnPushImg').disabled=!S.connected||!S.ready.img; }
+}
+
+/* ============================================================ OTA */
+function loadOtaFile(file){
+  if(!file) return;
+  file.arrayBuffer().then(buf=>{
+    const u=new Uint8Array(buf);
+    if(u.length<CTRL_LEN+4096) throw new Error('升级包太短');
+    if(u[0]!==0x01||String.fromCharCode(...u.slice(1,5))!=='OTA1')
+      throw new Error('不是有效的 OTA1 包');
+    const size=rd32(u,5),crc=rd32(u,9),chunk=rd16(u,13),ns=u[15],
+          iid=u[16],flags=u[17];
+    const tx=u.length-CTRL_LEN;
+    S.otaPkg=u;
+    S.otaInfo={size,crc,chunk,ns,iid,flags,tx};
+    $('otaInfo').innerHTML=[
+      ['文件',file.name+' · '+fmtBytes(u.length)],
+      ['payload',size+' B  ('+fmtBytes(size)+')'],
+      ['CRC32','0x'+crc.toString(16).padStart(8,'0')],
+      ['物理扇区',ns+' 个 · 传输 '+tx+' B  ('+fmtBytes(tx)+')'],
+      ['chunk / imageid',chunk+' B / '+iid],
+      ['flags','0x'+flags.toString(16)+'  '+(flags&1?'扇区级差分':'全量')],
+      ['bitmap',Array.from(u.slice(18,18+Math.min(ns,18))).map(x=>x?'1':'.').join('')]
+    ].map(r=>'<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>').join('');
+    $('btnPushOta').disabled=!S.connected||!S.ready.ota;
+    log('INFO','HOST','载入升级包 '+file.name+' · '+fmtBytes(tx)+' / '+ns+' 扇区');
+  }).catch(e=>log('ERROR','HOST','升级包解析失败：'+e.message));
+}
+function onOtaNotify(ev){
+  const v=new Uint8Array(ev.target.value.buffer);
+  if(v.length<11||v[0]!==0xA1) return;
+  S.otaNtfType=v[1]; S.otaWritten=rd32(v,2);
+  if(v[1]===0) log('DEBUG','OTA','READY，设备已完成擦除');
+  else if(v[1]===1) log('DEBUG','OTA','扇区确认，累计 '+S.otaWritten+' B');
+  else if(v[1]===3) log('INFO','OTA','DONE，回读 CRC 通过，image header 已写入');
+  else if(v[1]===4) log('ERROR','OTA','设备报错 code='+v[10]);
+  else if(v[1]===2) log('WARN','OTA','设备请求重发扇区');
+}
+async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+async function waitFor(fn,ms,label){
+  for(let i=0;i<ms/100;i++){ if(fn()) return true; await sleep(100); }
+  throw new Error('等待超时：'+label);
+}
+async function pushOta(){
+  if(!S.otaPkg||!S.ready.ota||S.busy) return;
+  if(!$('otaConfirm').checked){
+    log('WARN','HOST','请先勾选「已备份整片 Flash」');
+    switchPage('ota'); return;
+  }
+  S.busy=true; $('btnPushOta').disabled=true;
+  const info=S.otaInfo, body=S.otaPkg.slice(CTRL_LEN);
+  const winBytes=Number($('otaCredit').value)*4096;
+  let chunk=Number($('otaChunk').value),off=0,inflight=0;
+  const t0=performance.now(); S.otaNtfType=-1;
+  $('otaBar').parentElement.classList.remove('ok');
+  try{
+    const start=S.otaPkg.slice(0,CTRL_LEN);
+    start[13]=chunk&255; start[14]=(chunk>>8)&255;
+    await S.ch.otaCtrl.writeValueWithResponse(start);
+    $('otaProgText').textContent='设备擦除中…';
+    await waitFor(()=>S.otaNtfType===0||S.otaNtfType===4,8000,'START READY');
+    if(S.otaNtfType===4) throw new Error('设备拒绝 START');
+    log('INFO','OTA','开始传输 '+fmtBytes(body.length)+'，窗口 '+fmtBytes(winBytes));
+    const timer=setInterval(()=>{
+      const dt=(performance.now()-t0)/1000;
+      $('otaRate').textContent=(off/1024/Math.max(dt,.001)).toFixed(1)+' KB/s';
+    },200);
+    try{
+      while(off<body.length){
+        const part=body.slice(off,Math.min(off+chunk,body.length));
+        try{ await S.ch.otaData.writeValueWithoutResponse(part); }
+        catch(e){
+          if(chunk>182){ chunk=182; log('WARN','OTA','包长降为 182 B'); continue; }
+          if(chunk>20){ chunk=20; log('WARN','OTA','包长降为 20 B'); continue; }
+          throw e;
+        }
+        off+=part.length; inflight+=part.length;
+        $('otaBar').style.width=(100*off/body.length).toFixed(1)+'%';
+        $('otaProgText').textContent=fmtBytes(off)+' / '+fmtBytes(body.length);
+        if(S.otaNtfType===4) throw new Error('传输中设备报错');
+        /* 信用窗口只用于让出事件循环、刷新 UI 与检查设备错误。
+         * 不能用「等设备扇区 ACK」来释放窗口：ACK 由数据驱动，
+         * 停发数据就永远等不到下一个 ACK，会形成死锁。
+         * 每包 await 失败时 off 不推进，重发同一 part 是安全的
+         * （设备端是纯字节流，包长可变，降级无需通知）。 */
+        if(inflight>=winBytes){ inflight=0; await sleep(0); }
+      }
+    } finally { clearInterval(timer); }
+    $('otaProgText').textContent='回读校验中…';
+    await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x03]));
+    await waitFor(()=>S.otaNtfType===3||S.otaNtfType===4,12000,'COMMIT DONE');
+    if(S.otaNtfType!==3) throw new Error('CRC 校验失败');
+    const dt=(performance.now()-t0)/1000;
+    $('otaBar').style.width='100%';
+    $('otaBar').parentElement.classList.add('ok');
+    $('otaProgText').textContent='完成 · '+dt.toFixed(1)+' s';
+    $('otaRate').textContent=(body.length/1024/dt).toFixed(1)+' KB/s';
+    log('INFO','OTA','升级完成 '+dt.toFixed(1)+' s，断开并断电重启以启动新 imageid');
+  }catch(err){
+    log('ERROR','OTA','升级失败：'+err.message);
+    $('otaProgText').textContent='升级失败（旧固件仍可启动）';
+    try{ await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x02])); }catch(_){}
+  }finally{ S.busy=false; $('btnPushOta').disabled=!S.connected||!S.ready.ota; }
+}
+/* ============================================================ 事件绑定 */
+function bind(){
+  $$('#nav button').forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
+  $('btnTheme').onclick=toggleTheme;
+  $('btnConnect').onclick=()=>{
+    if(S.connected) disconnect();
+    else connect().catch(e=>{ log('ERROR','HOST','连接失败：'+e.message); });
+  };
+
+  /* 日志 dock */
+  $('dockHead').onclick=e=>{
+    if(e.target.id==='btnDockAll'){ switchPage('logs'); return; }
+    $('dock').classList.toggle('open');
+    $('dockArrow').textContent=$('dock').classList.contains('open')?'▼':'▲';
+  };
+  $('btnClearLog').onclick=()=>{ S.logs=[]; renderDock(); renderLogTable();
+    $('dockCount').textContent='0'; $('dockLast').textContent='日志已清空'; };
+  $('btnExportLog').onclick=exportLogs;
+  $('btnCopyLog').onclick=()=>{
+    const txt=S.logs.map(e=>hhmmss(e.ts)+'  '+e.level+'  '+e.src+'  '+e.msg).join('\n');
+    navigator.clipboard.writeText(txt).then(()=>log('INFO','HOST','日志已复制到剪贴板'))
+      .catch(e=>log('ERROR','HOST','复制失败：'+e.message));
+  };
+  $$('#logFilter button').forEach(b=>b.onclick=()=>{
+    $$('#logFilter button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); S.logFilter=b.dataset.f; renderLogTable();
+  });
+  $('logQuery').oninput=e=>{ S.logQuery=e.target.value; renderLogTable(); };
+
+  /* 总览 */
+  $('btnRefresh').onclick=()=>refreshStatus().catch(e=>log('ERROR','HOST',e.message));
+  $('btnSyncQuick').onclick=()=>syncTime().catch(e=>log('ERROR','HOST',e.message));
+  $('btnPing').onclick=()=>sendCmd(CMD.PING,0,0,8,0,'Ping').catch(e=>log('ERROR','HOST',e.message));
+  $('btnReboot').onclick=()=>{
+    if(confirm('确定让设备重启？')) sendCmd(CMD.REBOOT,0,0,8,0,'请求重启')
+      .catch(e=>log('ERROR','HOST',e.message));
+  };
+  $$('#pageSeg button').forEach(b=>b.onclick=()=>setPage(Number(b.dataset.p))
+    .catch(e=>log('ERROR','HOST',e.message)));
+  ['optInvert','optGrid','optPartial'].forEach(id=>$(id).onchange=()=>setUiOpts()
+    .catch(e=>log('ERROR','HOST',e.message)));
+  $('btnGaokao').onclick=()=>setGaokao().catch(e=>log('ERROR','HOST',e.message));
+
+  /* 对时 */
+  $('drift').oninput=calcPpm;
+  $('btnSync').onclick=()=>syncTime().catch(e=>log('ERROR','HOST',e.message));
+  $('btnManualSync').onclick=()=>{
+    const raw=$('manUnix').value.trim();
+    const u=raw?Number(raw):Math.floor(Date.now()/1000);
+    const p=Number($('manPpm').value)||0;
+    const t=Number($('manTz').value)||8;
+    syncTime(u,p,t).catch(e=>log('ERROR','HOST',e.message));
+  };
+  $('btnTimeQuery').onclick=()=>sendCmd(CMD.TIME_QUERY,0,0,8,0,'读取设备时间')
+    .catch(e=>log('ERROR','HOST',e.message));
+
+  /* 挪车号码 */
+  $('parkPhone').oninput=updatePhonePreview;
+  $('btnPhoneWrite').onclick=()=>writePhone(false).catch(e=>log('ERROR','HOST',e.message));
+  $('btnPhoneRead').onclick=()=>readPhone().catch(e=>log('ERROR','HOST',e.message));
+  $('btnPhonePage').onclick=()=>setPage(5).catch(e=>log('ERROR','HOST',e.message));
+  $('btnPhoneClear').onclick=()=>{ $('parkPhone').value=''; updatePhonePreview(); };
+
+  /* 图片 */
+  $('imgDrop').onclick=()=>$('imgFile').click();
+  $('imgFile').onchange=e=>loadImageFile(e.target.files[0]);
+  ['dragenter','dragover'].forEach(t=>$('imgDrop').addEventListener(t,e=>{
+    e.preventDefault(); $('imgDrop').classList.add('over'); }));
+  ['dragleave','drop'].forEach(t=>$('imgDrop').addEventListener(t,e=>{
+    e.preventDefault(); $('imgDrop').classList.remove('over'); }));
+  $('imgDrop').addEventListener('drop',e=>loadImageFile(e.dataTransfer.files[0]));
+  ['imW','imH','imCodec','imTh','imDither','imChunk','imHold'].forEach(id=>{
+    $(id).onchange=()=>{ if(S.imageBitmap) regenerate(); };
+  });
+  $('btnRecalc').onclick=regenerate;
+  $('btnPushImg').onclick=pushImage;
+  $('btnResumeClock').onclick=()=>setPage(2).catch(e=>log('ERROR','HOST',e.message));
+  $('btnAbortImg').onclick=async()=>{
+    try{ await S.ch.imgCtrl.writeValueWithResponse(new Uint8Array([0xA3]));
+         log('WARN','IMG','已发送 ABORT'); }catch(e){ log('ERROR','IMG',e.message); }
+  };
+
+  /* OTA */
+  $('otaDrop').onclick=()=>$('otaFile').click();
+  $('otaFile').onchange=e=>loadOtaFile(e.target.files[0]);
+  ['dragenter','dragover'].forEach(t=>$('otaDrop').addEventListener(t,e=>{
+    e.preventDefault(); $('otaDrop').classList.add('over'); }));
+  ['dragleave','drop'].forEach(t=>$('otaDrop').addEventListener(t,e=>{
+    e.preventDefault(); $('otaDrop').classList.remove('over'); }));
+  $('otaDrop').addEventListener('drop',e=>loadOtaFile(e.dataTransfer.files[0]));
+  $('btnPushOta').onclick=pushOta;
+  $('btnAbortOta').onclick=async()=>{
+    try{ await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x02]));
+         log('WARN','OTA','已发送 ABORT'); }catch(e){ log('ERROR','OTA',e.message); }
+  };
+}
+
+/* ============================================================ 启动 */
+function init(){
+  if(!navigator.bluetooth) $('secureNotice').style.display='block';
+  if(localStorage.getItem('esl-theme')==='dark')
+    document.documentElement.dataset.theme='dark';
+  buildUuidTable(); bind(); calcPpm(); updateSvcPill(); renderLogTable();
+  /* 号码记在浏览器里：设备没接 flash 时，靠每次连接自动补写保号。 */
+  const remembered=localStorage.getItem(PHONE_STORE)||'';
+  if(remembered) $('parkPhone').value=formatPhone(remembered);
+  updatePhonePreview();
+  const tick=()=>{
+    const d=new Date();
+    $('hostClock').textContent=hhmmss(d);
+    $('hostDate').textContent=d.toLocaleDateString('zh-CN',
+      {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+    $('hostUnix').textContent=Math.floor(d.getTime()/1000);
+    $('hostTz').textContent='UTC'+(-d.getTimezoneOffset()/60>=0?'+':'')+(-d.getTimezoneOffset()/60);
+  };
+  tick(); setInterval(tick,1000);
+  log('INFO','HOST','ESL Studio 已就绪，等待连接设备');
+  if(!navigator.bluetooth) log('ERROR','HOST','当前环境不支持 Web Bluetooth（需 localhost / HTTPS）');
+  else log('DEBUG','HOST','Web Bluetooth 可用；连接前请确认价签已上电并广播');
+}
+init();
+</script>
+</body>
+</html>
