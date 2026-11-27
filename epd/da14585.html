@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ESL Studio · 价签统一控制台</title>
+<title>WUZHOU.XYZ FMW · 价签统一控制台</title>
 <style>
 :root{
   --bg:#f5f6f8; --panel:#ffffff; --panel-2:#fafbfc; --line:#e5e8ed;
@@ -44,7 +44,9 @@ code,.mono{font-family:var(--mono);font-size:12px}
 .brand .logo{display:flex;align-items:center;gap:10px}
 .brand .mark{width:32px;height:32px;border-radius:9px;background:var(--brand);
   color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;letter-spacing:-1px}
-.brand h1{margin:0;font-size:15px;font-weight:650;letter-spacing:.2px}
+/* 品牌名 14 个半角字符，224 px 侧栏扣掉 logo(32) + gap(10) + 内边距(40)
+   只剩 142 px，15 px 会折行——固定 13 px + nowrap。 */
+.brand h1{margin:0;font-size:13px;font-weight:650;letter-spacing:.2px;white-space:nowrap}
 .brand p{margin:2px 0 0 42px;font-size:11px;color:var(--faint)}
 .nav{padding:12px 10px;flex:1;overflow:auto}
 .nav button{width:100%;display:flex;align-items:center;gap:11px;padding:9px 12px;margin:2px 0;
@@ -234,8 +236,8 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
 <div class="app">
   <aside class="side">
     <div class="brand">
-      <div class="logo"><div class="mark">ESL</div><h1>ESL Studio</h1></div>
-      <p>DA14585 · 2.13″ 墨水屏控制台</p>
+      <div class="logo"><div class="mark">WZ</div><h1>WUZHOU.XYZ FMW</h1></div>
+      <p>DA14585 · 2.13″ 墨水屏</p>
     </div>
     <nav class="nav" id="nav">
       <button data-page="overview" class="active"><span class="ico">◫</span><span class="txt">总览与设备</span></button>
@@ -244,11 +246,9 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
       <button data-page="image"><span class="ico">▧</span><span class="txt">图片显示</span></button>
       <button data-page="ota"><span class="ico">⇩</span><span class="txt">固件升级 OTA</span></button>
       <button data-page="logs"><span class="ico">≡</span><span class="txt">运行日志</span><span class="badge" id="navBadge">0</span></button>
-      <button data-page="about"><span class="ico">ⓘ</span><span class="txt">协议与说明</span></button>
     </nav>
     <div class="side-foot">
-      <a href="hm213.html">自建固件 · <b>ESL-SELF</b><br>
-      Console proto v1 · C99</a>
+      <a href="wzfmw.html">返回下载介绍页</a>
     </div>
   </aside>
 
@@ -260,6 +260,7 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
       <span class="pill" id="svcPill"><span class="dot"></span><span id="svcText">3 个服务未就绪</span></span>
       <span class="pill off" id="connPill"><span class="dot"></span><span id="connText">未连接</span></span>
       <button class="btn sm" id="btnTheme" title="切换明暗主题">◐</button>
+      <label style="font-size:12px;white-space:nowrap"><input type="checkbox" id="showAll"> 列出所有设备</label>
       <button class="btn primary" id="btnConnect">连接设备</button>
     </header>
 
@@ -306,25 +307,29 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
                 <button data-p="0" disabled>设备信息</button>
                 <button data-p="1" disabled>时钟</button>
                 <button data-p="2" class="on" disabled>万年历</button>
-                <button data-p="3" disabled>图片模式</button>
-                <button data-p="4" disabled>目标提醒</button>
+                <button data-p="3" disabled>图片</button>
+                <button data-p="4" disabled>倒计时</button>
                 <button data-p="5" disabled>挪车电话</button>
               </div>
               <span class="hint">0 号设备信息页可看固件版本、面板尺寸、LP 时钟源与对时状态，右侧是微信赞赏码；5 号挪车页的号码在「挪车号码」页修改。OTA 或图片传输进行中时，设备会拒绝切页并回一条 WARN 日志。</span>
             </div>
             <div class="field">
               <label>连接后自动对时</label>
-              <label class="chk"><input type="checkbox" id="autoSync" checked> 每次连接成功立即写入本机时间</label>
+              <label class="chk"><input type="checkbox" id="autoSync"> 每次连接成功立即写入本机时间</label>
+              <span class="hint">默认关闭：写入时间会触发一次约 2 s 的整屏刷新，和下面的自动补写号码叠在一起，屏幕连闪两下很像「设备重启了」。需要时手动勾选，或点「对时」按钮单次执行。</span>
             </div>
           </div>
 
           <div class="card">
             <h3>显示选项</h3>
-            <p class="sub">选项位会写进设备，立即触发一次重绘；断电不保存。</p>
+            <p class="sub">选项位会写进设备并掉电保存，改完立即触发一次重绘。</p>
             <div class="btn-row" style="flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:16px">
               <label class="chk"><input type="checkbox" id="optInvert" disabled> 整屏反色（黑底白字）</label>
               <label class="chk"><input type="checkbox" id="optGrid" disabled> 显示月历网格</label>
-              <label class="chk"><input type="checkbox" id="optPartial" disabled> 允许局部刷新波形</label>
+              <label class="chk"><input type="checkbox" id="optHour12" disabled> 12 小时制（大时钟显示 AM/PM）</label>
+              <label class="chk"><input type="checkbox" id="optSegFont" disabled> 大数字用七段数码管（时钟页 / 倒计时页）</label>
+              <span class="hint">12 小时制：时钟页大数字显示「2:26 PM」，倒计时页顶行显示「26/11/22 日 2:26PM」；不勾 = 24 小时制（默认）。只改时间写法，不改日期。</span>
+              <span class="hint">七段数码管：不勾 = Inter Bold 现代数字（默认）；勾上 = LCD 电子表那种七段数码管。只作用于横屏时钟页的大 HH:MM 和倒计时页的超大天数，切换后立即重绘，断电重启仍然保持。</span>
             </div>
             <div class="field">
               <label>高考日期配置（默认 6 月 7 日起连考 3 天）</label>
@@ -335,6 +340,16 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
                 <button class="btn" id="btnGaokao" disabled>应用</button>
               </div>
               <span class="hint">2020 年这类延期年份可运行时改到 7 月，无需重新编译固件。</span>
+            </div>
+            <div class="field" style="margin-top:14px">
+              <label>重要日配置（每年重复，月填 0 或点清除即取消）</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;margin-top:4px">
+                <input type="number" id="impMonth" value="1" min="0" max="12" placeholder="月">
+                <input type="number" id="impDay" value="1" min="1" max="31" placeholder="日">
+                <button class="btn" id="btnImpSet" disabled>应用</button>
+                <button class="btn" id="btnImpClear" disabled>清除</button>
+              </div>
+              <span class="hint">生日 / 纪念日等每年重复的日子，时钟页底行右侧显示倒计时。</span>
             </div>
           </div>
         </div>
@@ -383,6 +398,39 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
         </div>
 
         <div class="card">
+          <h3>自动走时校正</h3>
+          <p class="sub">对时后自动观测设备与本机的时间差，回归出漂移并写回 ppm，再重新对时继续观测，闭环收敛。</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:12px">
+            <label class="chk"><input type="checkbox" id="acalEnable" checked> 对时后自动校正走时误差</label>
+            <div class="field"><label>观测窗口</label><select id="acalWindow">
+              <option value="10">10 分钟（±50 ppm）</option>
+              <option value="20" selected>20 分钟（±25 ppm）</option>
+              <option value="30">30 分钟（±15 ppm）</option></select></div>
+          </div>
+          <div class="stat" style="margin-bottom:12px">
+            <div class="k">设备 tick 折算系数（RTC1，掉电保留）</div>
+            <div class="v tabnum" id="tickNow">等待读取</div>
+            <div class="v tabnum" id="tickIdleNow" style="font-size:15px;opacity:.75">
+              断开态 等待读取</div>
+          </div>
+          <div class="bar-label"><span id="acalState">等待对时</span><span id="acalDrift">—</span></div>
+          <div class="bar"><i id="acalBar"></i></div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn" id="btnAcalNow" disabled>立即结算</button>
+            <button class="btn ghost" id="btnAcalReset" disabled>重新开始</button>
+          </div>
+          <div class="notice">对时/切页会触发约 6.5 s 双遍整刷，期间 unix 不推进，紧接测量会得到假值；
+            自动观测先静置 <b>30 s</b> 再建基准。ppm 是「每秒攒分数、满 1e6 µs 才补 1 秒」的离散补偿，
+            范围 ±500，只能吸收逐板微调。<b>大比例误差由网页直接改写 tick 折算系数</b>（0.001 ms 精度，
+            写进 RTC1 掉电保留），再重新对时建基准继续闭环；超出 50..200 ms/tick 的荒谬结果只告警不写。
+            <br><b>连接态与断开态是两个不同的系数</b>：连着的时候协议栈把 100 ms 定时器按 30.8 kHz 折算成约
+            94 ms，断开之后按真实 32.768 kHz 走约 100 ms，比值 1.064，一个系数不可能两态同时准。
+            本页自动校正只标<b>连接态</b>（它必须在连着的状态下测）；台钟日常待机是断开态，
+            那个系数要用命令行 <code>python tools/ble_client.py calidle --minutes 20 --apply</code>
+            断开静置标定。</div>
+        </div>
+
+        <div class="card">
           <h3>手动对时</h3>
           <p class="sub">留空则使用本机当前时间。时区范围 −12 .. +14，设备默认 UTC+8。</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:14px">
@@ -425,8 +473,9 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
             <button class="btn" id="btnPhonePage" disabled>切到挪车页（5）</button>
             <button class="btn ghost" id="btnPhoneClear">清空输入</button>
           </div>
-          <label class="chk" style="margin-top:12px"><input type="checkbox" id="autoPushPhone" checked>
+          <label class="chk" style="margin-top:12px"><input type="checkbox" id="autoPushPhone">
             每次连接成功后自动把本机记住的号码补写一次（设备没接 flash 时靠这个保号）</label>
+          <span class="hint">同样默认关闭，避免连接瞬间连发两条会触发整刷的命令。状态快照里的「运行 / uptime」单调递增即代表设备没有复位。</span>
         </div>
 
         <div class="card">
@@ -511,20 +560,19 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
               <option value="244">244 B · DLE + MTU 247</option>
               <option value="182">182 B · iOS MTU 185</option>
               <option value="20">20 B · 默认 MTU 23</option></select></div>
-            <div class="field"><label>信用窗口</label><select id="imCredit">
-              <option value="4">4 包</option><option value="8" selected>8 包</option>
-              <option value="16">16 包</option></select></div>
+            <div class="field"><label>发送节奏</label><select id="imCredit">
+              <option value="1" selected>逐包串行（ATT 流控，最稳）</option></select></div>
             <div class="field"><label>显示时长（秒，0 = 常驻）</label><input type="number" id="imHold" value="0" min="0" max="65535"></div>
           </div>
           <div class="bar-label"><span id="imProgText">等待推送</span><span id="imRate">—</span></div>
           <div class="bar"><i id="imBar"></i></div>
           <div class="btn-row" style="margin-top:14px">
             <button class="btn primary" id="btnPushImg" disabled>推送并显示</button>
-            <button class="btn" id="btnResumeClock" disabled>切回万年历</button>
+            <button class="btn" id="btnResumeClock" disabled>切回默认页（时钟）</button>
             <button class="btn ghost" id="btnAbortImg" disabled>中止</button>
           </div>
-          <div class="notice warn">XOR 差分的参考帧是设备<b>当前显示帧</b>。连续推图且中间没切回万年历时才有意义；
-            从日历切到图片请改用 RLE，否则画面会错位。</div>
+          <div class="notice warn">XOR 差分的参考帧是设备<b>当前显示帧</b>。连续推图且中间没切回默认页（时钟）时才有意义；
+            从别的页面切到图片请改用 RLE，否则画面会错位。</div>
         </div>
       </section>
 
@@ -548,15 +596,14 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
             <div class="field"><label>初始包长</label><select id="otaChunk">
               <option value="244">244 B · 最快</option><option value="182">182 B</option>
               <option value="20">20 B</option></select></div>
-            <div class="field"><label>信用窗口</label><select id="otaCredit">
-              <option value="4" selected>4 扇区（16 KB）</option>
-              <option value="2">2 扇区（8 KB）</option>
-              <option value="1">1 扇区（4 KB，最稳）</option></select></div>
+            <div class="field"><label>流控方式</label>
+              <span class="hint" style="display:block;padding-top:7px">逐包 ATT 写请求：每包等设备应答才发下一包，不会丢包</span></div>
           </div>
+          <p class="hint" style="margin:0 0 12px">数据段用 <b>带响应的写</b>（Write Request），由 ATT 层节流；无响应写会被 Windows 蓝牙栈静默丢包，主机进度条到 100% 而设备只收到几 KB。传完会用 QUERY 核对设备实际落盘字节数再 COMMIT。</p>
           <div class="bar-label"><span id="otaProgText">等待升级</span><span id="otaRate">—</span></div>
           <div class="bar"><i id="otaBar"></i></div>
           <label class="chk" style="margin:14px 0"><input type="checkbox" id="otaConfirm">
-            我已用 J-Link 备份整片 SPI Flash（含 0x39000 板级记录）</label>
+            我已备份整片 SPI Flash（含 0x39000 板级记录），确认可安全升级</label>
           <div class="btn-row">
             <button class="btn primary" id="btnPushOta" disabled>开始升级</button>
             <button class="btn ghost" id="btnAbortOta" disabled>中止</button>
@@ -597,54 +644,6 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
         </div>
       </section>
 
-      <!-- ================= 关于 ================= -->
-      <section class="page" data-page="about">
-        <div class="card">
-          <h3>GATT 服务与特征值</h3>
-          <p class="sub">三个服务相互独立；控制台把它们的控制面收拢到一页。</p>
-          <table class="spec"><thead><tr><th>用途</th><th>UUID</th><th>属性</th></tr></thead><tbody id="uuidTable"></tbody></table>
-        </div>
-        <div class="grid g2">
-          <div class="card">
-            <h3>帧格式速查</h3>
-            <dl class="kv" style="grid-template-columns:96px 1fr">
-              <dt>Console Cmd</dt><dd>20 B：cmd / 'C1' / u32 / i16 / tz / u8 / 保留</dd>
-              <dt>Console Status</dt><dd>32 B：0xC1 + page + flags + unix + 面板 + ppm…</dd>
-              <dt>Console Event</dt><dd>32 B：0xC2 + level + code + seq + 27 B 文本</dd>
-              <dt>Console Phone</dt><dd>32 B：0xC3 + 长度 + 持久化位 + 16 B 号码</dd>
-              <dt>PHONE_SET</dt><dd>20 B：0x32 / 'C1' / 长度 / 16 B 号码（唯一复用保留字节的命令）</dd>
-              <dt>IMG START</dt><dd>64 B：'IMG1' + 宽高 + 帧长/流长/CRC32 + codec…</dd>
-              <dt>OTA START</dt><dd>64 B：'OTA1' + size/CRC/chunk/nsect/imageid/bitmap</dd>
-              <dt>数据通道</dt><dd>纯字节流，无包头；244 B/包，Write Without Response</dd>
-            </dl>
-          </div>
-          <div class="card">
-            <h3>使用与限制</h3>
-            <ul style="margin:0;padding-left:18px;font-size:12.5px;line-height:1.9;color:var(--muted)">
-              <li>需 Chrome / Edge 桌面版，且通过 <code>localhost</code> 或 HTTPS 打开。</li>
-              <li>Web Bluetooth 不暴露 MTU；包长会在写入失败时自动降级 244 → 182 → 20。</li>
-              <li>DA14585 不支持 2M PHY，射频层只有 1M PHY + DLE 一条提速路径。</li>
-              <li>要跑满 244 B/包，中央设备与系统蓝牙栈都必须支持 DLE。</li>
-              <li>图片通道的端到端延迟主要来自 EPD 全刷 1~3 秒，不在空口。</li>
-              <li>固件侧仍需实现 <code>platform.h</code> 回调、屏驱动初始化序列与 LUT。</li>
-            </ul>
-          </div>
-        </div>
-        <div class="card">
-          <h3>固件侧待办清单</h3>
-          <div class="chips">
-            <span class="chip">J-Link 读整片 dump ≥ 0x3A010</span>
-            <span class="chip">实现 esl_platform_t 7 个回调</span>
-            <span class="chip">实现 esl_ota_io_t 6 个回调</span>
-            <span class="chip">按 UUID 建 GATT 库</span>
-            <span class="chip">DLE 251 / MTU 247 / CI 7.5 ms</span>
-            <span class="chip">填 EPD 初始化序列与 7/10 步 LUT</span>
-            <span class="chip">双 bank 构建同步</span>
-          </div>
-          <div class="foot-note">本页所有内容对应 <code>HM2.13/</code> 自建工程；未使用任何第三方项目的代码或波形数据。</div>
-        </div>
-      </section>
-
     </div>
 
     <div class="dock" id="dock">
@@ -670,32 +669,38 @@ table.spec td.mono{font-family:var(--mono);font-size:11px;word-break:break-all}
  * 是为了让下面的 resolveServices 保持「一组一角色」的结构，
  * 但它们的 SVC 指向同一个服务，一次 service discovery 全部拿到。 */
 const UUID = {
-  CON_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  CON_CMD:'B1E5A007-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  CON_STA:'B1E5A005-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  OTA_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  OTA_CTRL:'B1E5A001-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  OTA_DATA:'B1E5A002-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  OTA_NTF:'B1E5A001-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  IMG_SVC:'B1E5A000-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  IMG_CTRL:'B1E5A003-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  IMG_DATA:'B1E5A004-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  IMG_NTF:'B1E5A003-6D1F-4C3A-9E2B-7A5C1D0F8E44',
-  TIME:'B1E5A006-6D1F-4C3A-9E2B-7A5C1D0F8E44'
+  CON_SVC:'b1e5a000-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  CON_CMD:'b1e5a007-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  CON_STA:'b1e5a005-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  OTA_SVC:'b1e5a000-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  OTA_CTRL:'b1e5a001-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  OTA_DATA:'b1e5a002-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  OTA_NTF:'b1e5a001-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  IMG_SVC:'b1e5a000-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  IMG_CTRL:'b1e5a003-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  IMG_DATA:'b1e5a004-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  IMG_NTF:'b1e5a003-6d1f-4c3a-9e2b-7a5c1d0f8e44',
+  TIME:'b1e5a006-6d1f-4c3a-9e2b-7a5c1d0f8e44'
 };
 const CMD = {TIME_SET:0x10,TIME_QUERY:0x11,STATUS:0x12,PAGE:0x20,
              UI_OPTS:0x30,GAOKAO:0x31,PHONE_SET:0x32,PHONE_QUERY:0x33,
+             IMPORTANT:0x34,TICK_CAL:0x35,SETTINGS:0x36,TICK_CAL_IDLE:0x37,
              REBOOT:0x40,PING:0x7F};
-const UI_BIT = {INVERT:0x01,GRID:0x02,PARTIAL:0x04};
+/* 0x08 是七段数码管字体、0x04 是 12 小时制。两者都在 0xC5 设置帧的第 5
+   字节 ui_bits 里（状态帧 flags 只剩 bit7 一位，它回显的正是 12 小时制），
+   所以连上设备后要发一条 SETTINGS_QUERY，否则断电重启后复选框会和屏上
+   不一致。0x04 在上一版是「允许局部刷新波形」，已退役改作 12 小时制。 */
+const UI_BIT = {INVERT:0x01,GRID:0x02,HOUR12:0x04,SEGFONT:0x08};
 const FLAG = {RTC:0x01,EPD:0x02,OTA:0x04,IMG:0x08,HOLD:0x10,
-              INVERT:0x20,GRID:0x40,PARTIAL:0x80};
+              INVERT:0x20,GRID:0x40,HOUR12:0x80};
 /* 状态帧第 31 字节的接线自检位，顺序与 app.h 的 ESL_APP_WIRE_* 一致。
    位为 1 = 平台层在本次上电后确实把该接口接起来了；缺哪项设备就少哪个
    功能，而且不会报错——所以主机侧要把它摆在明面上。 */
 const WIRE_NAMES = ['rtc','phone','ota','id','ntf','sleep'];
 /* 下标必须与 console.h 的 ESL_CON_PAGE_* 完全一致；6 是 OTA 系统页，
-   由传输状态自动切换，主机不能主动请求。 */
-const PAGE_NAME = ['设备信息','时钟','万年历','图片模式','目标提醒',
+   由传输状态自动切换，主机不能主动请求。名称与「快捷操作」里的切页
+   按钮保持同一套说法（3 = 图片，4 = 倒计时）。 */
+const PAGE_NAME = ['设备信息','时钟','万年历','图片','倒计时',
                    '挪车电话','OTA 升级','启动中'];
 const CTRL_LEN = 64, CMD_LEN = 20, STATUS_LEN = 32;
 const PHONE_MAX = 16, PHONE_STORE = 'esl-phone';
@@ -708,10 +713,14 @@ const S = {
       imgCtrl:null,imgData:null,imgNtf:null},
   ready:{con:false,ota:false,img:false},
   status:null,
-  otaNtfType:-1, otaWritten:0, imgNtfType:-1,
+  otaNtfType:-1, otaWritten:0, otaNtfSeq:0, imgNtfType:-1,
   imageBitmap:null, imageFrame:null, imagePkg:null, lastFrame:null,
   otaPkg:null, otaInfo:null,
   devicePhone:'', phoneSaved:null,
+  /* 校准输入是否被用户改过：没改过就一律沿用设备当前值。
+   * 否则网页点一次「对时」就会把 CLI 标定的 ppm/时区清成默认 0/8。 */
+  ppmTouched:false, tzTouched:false, manPpmTouched:false,
+  lastSig:null,      /* 上一次状态快照的关键字段签名，只用于日志去抖 */
   logs:[], logFilter:'all', logQuery:'', logSeq:0,
   page:'overview'
 };
@@ -824,12 +833,11 @@ function exportLogs(){
 /* ============================================================ 导航 / 主题 */
 const TITLES={
   overview:['总览与设备','连接状态 / 快捷操作'],
-  time:['对时与校准','软件 RTC / ppm 补偿'],
+  time:['对时与校准','软件 RTC / ppm 补偿 / 自动走时校正'],
   parking:['挪车号码','5 号功能页 / 上位机可改'],
   image:['图片显示','现场转码 / 高速推送'],
   ota:['固件升级 OTA','双 bank 原子提交'],
-  logs:['运行日志','主机 + 设备事件'],
-  about:['协议与说明','GATT / 帧格式 / 待办']
+  logs:['运行日志','主机 + 设备事件']
 };
 function switchPage(name){
   S.page=name;
@@ -846,20 +854,6 @@ function toggleTheme(){
   localStorage.setItem('esl-theme',dark?'light':'dark');
   log('DEBUG','HOST','主题切换为 '+(dark?'浅色':'深色'));
 }
-function buildUuidTable(){
-  const rows=[
-    ['主服务',UUID.CON_SVC,'广播过滤用这一条'],
-    ['├ OTA Control',UUID.OTA_CTRL,'Write With Response + Notify'],
-    ['├ OTA Data',UUID.OTA_DATA,'Write Without Response'],
-    ['├ 图像 Control',UUID.IMG_CTRL,'Write With Response + Notify'],
-    ['├ 图像 Data',UUID.IMG_DATA,'Write Without Response'],
-    ['├ 状态 Status',UUID.CON_STA,'Notify + Read'],
-    ['├ 控制台 Command',UUID.CON_CMD,'Write With Response'],
-    ['└ 对时 Time',UUID.TIME,'Read + Write（8 字节）']
-  ];
-  $('uuidTable').innerHTML=rows.map(r=>
-    '<tr><td>'+esc(r[0])+'</td><td class="mono">'+r[1]+'</td><td>'+esc(r[2])+'</td></tr>').join('');
-}
 
 /* ============================================================ 连接管理 */
 function setConnected(on){
@@ -868,11 +862,11 @@ function setConnected(on){
   $('connText').textContent=on?(S.device&&S.device.name?S.device.name:'已连接'):'未连接';
   $('btnConnect').textContent=on?'断开连接':'连接设备';
   const ids=['btnSyncQuick','btnRefresh','btnPing','btnReboot','btnSync','btnManualSync',
-             'btnTimeQuery','btnGaokao','btnResumeClock','btnTimeQuery',
+             'btnTimeQuery','btnGaokao','btnImpSet','btnImpClear','btnResumeClock','btnTimeQuery',
              'btnPhoneWrite','btnPhoneRead','btnPhonePage'];
   ids.forEach(id=>{ const e=$(id); if(e) e.disabled=!on||!S.ready.con; });
   $('pageSeg').querySelectorAll('button').forEach(b=>b.disabled=!on||!S.ready.con);
-  ['optInvert','optGrid','optPartial'].forEach(id=>$(id).disabled=!on||!S.ready.con);
+  ['optInvert','optGrid','optHour12','optSegFont'].forEach(id=>$(id).disabled=!on||!S.ready.con);
   $('btnPushImg').disabled=!on||!S.ready.img||!S.imagePkg;
   $('btnPushOta').disabled=!on||!S.ready.ota||!S.otaPkg;
   $('btnAbortImg').disabled=!on||!S.ready.img;
@@ -933,12 +927,13 @@ async function resolveServices(){
 }
 async function connect(){
   if(!navigator.bluetooth) throw new Error('浏览器不支持 Web Bluetooth，请用 Chrome / Edge');
-  const dev=await navigator.bluetooth.requestDevice({
-    /* 三组常量指向同一个服务，filters 里只写一条，重复项在某些
-     * Chrome 版本上会让 requestDevice 直接抛 InvalidStateError。 */
-    filters:[{services:[UUID.CON_SVC]}],
-    optionalServices:[UUID.CON_SVC]
-  });
+  const opts={optionalServices:[UUID.CON_SVC]};
+  /* Web Bluetooth 要求 UUID 必须是小写十六进制。固件若没在广播里带这个
+   * 128 位服务 UUID，filters 会把设备过滤掉；勾「列出所有设备」改用
+   * acceptAllDevices 即可连上（GATT 服务本身不依赖广播数据）。 */
+  if($('showAll')&&$('showAll').checked) opts.acceptAllDevices=true;
+  else opts.filters=[{services:[UUID.CON_SVC]}];
+  const dev=await navigator.bluetooth.requestDevice(opts);
   S.device=dev;
   dev.addEventListener('gattserverdisconnected',onDisconnected);
   log('INFO','HOST','正在连接 '+(dev.name||dev.id));
@@ -947,17 +942,52 @@ async function connect(){
   setConnected(true);
   if(!S.ready.con) log('WARN','HOST','Console 服务缺失：对时与状态查询不可用');
   if(S.ready.con){
+    startKeepAlive();
     await sendCmd(CMD.STATUS);
-    if($('autoSync').checked && S.page!=='ota') await syncTime();
+    /* 补一条设置查询：只为了把「七段字体」这类状态帧带不下的位读回来。 */
+    await sendCmd(CMD.SETTINGS,0,0,8,0,'读取设置快照');
+    /* 两项兜底默认关闭：连接瞬间连发「对时 + 补写号码」会排两次整刷，
+     * 屏幕连闪两下，现场极易被误认成设备重启。即便用户主动勾上，
+     * 也串行执行并留出一次整刷的间隔，不与首帧渲染抢 BLE 栈。 */
+    if($('autoSync').checked && S.page!=='ota'){
+      await sleep(400);
+      await syncTime();
+      if($('autoPushPhone').checked) await sleep(2500);
+    }
     if($('autoPushPhone').checked) await autoPushPhone();
   }
 }
+/* 保活：设备端有「连接空闲 30 s 就主动断链」的看门狗（ESL_CONN_IDLE_MS），
+ * 目的是把「主机进程被强杀 / 蓝牙适配器掉线」这类静默死链收回来。代价是
+ * 网页只连上看状态、不发任何写入时，30 秒后会被设备自己断开。
+ * 所以连接期间每 15 s 发一条 STATUS 查询：既是保活，又顺带刷新界面。
+ * 不用 PING(0x7F)——那条会让设备回一条 "pong" 日志，白刷一屏滚动区。 */
+let keepAliveTimer=null;
+function startKeepAlive(){
+  stopKeepAlive();
+  keepAliveTimer=setInterval(async()=>{
+    if(!S.connected||!S.ready.con||!S.ch.conCmd) return;
+    /* 传图 / OTA 期间不发：数据通道是 Write Without Response 的纯字节流，
+       中间插一条 STATUS 写会在 ATT 层排到数据包之间，设备侧要么被
+       COMMIT 前的多余命令打断，要么让主机自己的发送队列更难排空。 */
+    if(S.busy) return;
+    try{ await sendCmd(CMD.STATUS); }catch(_){ /* 断开时静默，由 onDisconnected 收尾 */ }
+  },15000);
+}
+function stopKeepAlive(){
+  if(keepAliveTimer){ clearInterval(keepAliveTimer); keepAliveTimer=null; }
+}
 function onDisconnected(){
   log('WARN','DEVICE','GATT 连接断开');
+  stopKeepAlive();
   S.ready={con:false,ota:false,img:false};
   S.ch={conCmd:null,conSta:null,otaCtrl:null,otaData:null,otaNtf:null,
         imgCtrl:null,imgData:null,imgNtf:null};
   S.status=null;
+  S.lastSig=null;
+  S.ppmTouched=false; S.tzTouched=false; S.manPpmTouched=false;
+  /* 断开后设备画布内容未知（可能被别的页覆盖），XOR 基帧作废。 */
+  S.lastFrame=null;
   setConnected(false);
 }
 function disconnect(){
@@ -987,6 +1017,7 @@ function onConsoleNotify(ev){
   if(v.length<STATUS_LEN) return;
   if(v[0]===0xC1) applyStatus(v);
   else if(v[0]===0xC3) applyPhoneFrame(v);
+  else if(v[0]===0xC5) applySettings(v);
   else if(v[0]===0xC2){
     const names=['DEBUG','INFO','WARN','ERROR'];
     const lv=names[v[1]&3]||'INFO';
@@ -1004,6 +1035,15 @@ function applyStatus(v){
   };
   for(let i=16;i<24 && v[i];i++) st.version+=String.fromCharCode(v[i]);
   S.status=st;
+  /* 校准值默认跟随设备：用户没动过输入框就用状态帧里的真值回填，
+   * 避免网页对时把 CLI 标定的 ppm/时区静默清零。用户一旦改过输入框，
+   * 后续状态帧就不再覆盖他的输入。 */
+  if(!S.ppmTouched){
+    $('ppmManual').value=st.ppm;
+    $('ppmCalc').textContent=st.ppm;
+  }
+  if(!S.manPpmTouched) $('manPpm').value=st.ppm;
+  if(!S.tzTouched) $('manTz').value=st.tz;
   $('statusTag').textContent='已同步';
   $('sPanel').textContent=st.width+' × '+st.height;
   $('sVersion').textContent=st.version||'—';
@@ -1021,11 +1061,11 @@ function applyStatus(v){
     b.classList.toggle('on',Number(b.dataset.p)===st.page));
   $('optInvert').checked=!!(flags&FLAG.INVERT);
   $('optGrid').checked=!!(flags&FLAG.GRID);
-  $('optPartial').checked=!!(flags&FLAG.PARTIAL);
+  $('optHour12').checked=!!(flags&FLAG.HOUR12);
   const rows=[
     ['proto / page',st.proto+' / '+st.page+' ('+(PAGE_NAME[st.page]||'?')+')'],
     ['flags','0x'+flags.toString(16).padStart(2,'0')+'  '+
-      ['RTC','EPD','OTA','IMG','HOLD','INV','GRID','PART'].filter((_,i)=>flags&(1<<i)).join(' ')],
+      ['RTC','EPD','OTA','IMG','HOLD','INV','GRID','12H'].filter((_,i)=>flags&(1<<i)).join(' ')],
     ['unix',st.unix+'  ('+new Date(st.unix*1000).toISOString()+')'],
     ['panel',st.width+' x '+st.height+'  frame '+Math.ceil(st.width/8)*st.height+' B'],
     ['ppm / tz',st.ppm+' / '+st.tz],
@@ -1036,43 +1076,370 @@ function applyStatus(v){
       WIRE_NAMES.map((k,i)=>((st.wire&(1<<i))?k:'-')).join(' ')]
   ];
   $('rawStatus').innerHTML=rows.map(r=>'<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>').join('');
-  log('DEBUG','DEVICE','状态快照 page='+st.page+' rtc='+!!(flags&FLAG.RTC)+
-      ' panel='+st.width+'x'+st.height);
+  /* 保活每 15 s 一条 STATUS，一天 5760 帧。以前每帧都记一条 DEBUG，
+   * 一天就把 S.logs 的 3000 条上限冲爆，真正要看的 WARN/ERROR 全被挤掉
+   * —— 现场排查时翻日志只剩「状态快照」刷屏。
+   * 改成只有关键字段变化（或首帧）才落一条，日志留给异常。 */
+  const sig=[st.page,flags,st.ppm,st.tz,st.err,st.imageid,st.wire].join('|');
+  if(sig!==S.lastSig){
+    S.lastSig=sig;
+    log('DEBUG','DEVICE','状态变化 page='+st.page+'('+(PAGE_NAME[st.page]||'?')+')'+
+        ' flags=0x'+flags.toString(16).padStart(2,'0')+
+        ' ppm='+st.ppm+' tz='+st.tz+' err=0x'+st.err.toString(16)+
+        ' imageid='+st.imageid);
+  }
   /* 面板尺寸自动同步到图片页 */
   if(st.width>=64&&st.height>=64){ $('imW').value=st.width; $('imH').value=st.height; }
+  /* 自动走时校正：每一帧状态快照都是一个观测点（保活 15 s 一条） */
+  acalOnStatus(st);
 }
+/* 0xC5 设置快照：ui_bits 是**唯一**能拿到「七段数码管字体」这一位的通道。
+   状态帧 flags 的 8 个位已经分完（RTC/EPD/OTA/IMG/HOLD/INV/GRID/12H），
+   设备端的 ui_bits 却是一个完整字节，所以连上设备后补一次这条查询。
+   布局见固件 console.h 的 ESL_CON_FRAME_SETTINGS：1=page 2/3=重要日月
+   4=valid 5=ui_bits 6=load_rc 7/8=落盘成功/失败次数 9=dirty 10..12=高考
+   13..16=tick_us（连接态，旧固件为 0，回退默认值 93990）
+   17..20=tick_idle（断开态，旧固件为 0，回退 100000）
+   21..24 / 25..28 = 断开态 / 连接态累计毫秒（只给标定用）。 */
+function applySettings(v){
+  const rawTick=rd32(v,13), tickUs=rawTick||ACAL_BASELINE_US;
+  const rawIdle=rd32(v,17), tickIdle=rawIdle||ACAL_IDLE_BASELINE_US;
+  S.settings={
+    page:v[1], impMonth:v[2], impDay:v[3], impValid:v[4], uiBits:v[5],
+    loadRc:v[6], saveOk:v[7], saveFail:v[8], dirty:v[9],
+    gkMonth:v[10], gkDay:v[11], gkDays:v[12], tickUs, tickIdle
+  };
+  if(v.length>=29){
+    S.settings.uIdleMs=rd32(v,21);
+    S.settings.uConnMs=rd32(v,25);
+  }
+  $('tickNow').textContent='连接态 '+(tickUs/1000).toFixed(3)+' ms/tick'+
+    (rawTick?'':'（默认，未标定）');
+  $('tickIdleNow').textContent='断开态 '+(tickIdle/1000).toFixed(3)+' ms/tick'+
+    (rawIdle?'':'（默认，未标定）');
+  /* 复选框以设备为准：断电重启后网页刚连上也能看到真正存着的选项。 */
+  $('optInvert').checked=!!(v[5]&UI_BIT.INVERT);
+  $('optGrid').checked=!!(v[5]&UI_BIT.GRID);
+  $('optHour12').checked=!!(v[5]&UI_BIT.HOUR12);
+  $('optSegFont').checked=!!(v[5]&UI_BIT.SEGFONT);
+  log('DEBUG','DEVICE','设置快照 page='+v[1]+' ui_bits=0x'+v[5].toString(16).padStart(2,'0')+
+      ' 字体='+((v[5]&UI_BIT.SEGFONT)?'七段':'Inter')+
+      ' 时制='+((v[5]&UI_BIT.HOUR12)?'12h':'24h')+
+      ' tick='+(tickUs/1000).toFixed(3)+' ms'+
+      ' load_rc='+v[6]+' 落盘 ok/fail='+v[7]+'/'+v[8]+(v[9]?' 待落盘':''));
+}
+
 async function refreshStatus(){ await sendCmd(CMD.STATUS,0,0,8,0,'请求状态快照'); }
-async function syncTime(unix,ppm,tz){
-  const u=unix!==undefined?unix:Math.floor(Date.now()/1000);
-  const p=ppm!==undefined?ppm:currentPpm();
-  const t=tz!==undefined?tz:Number($('manTz').value||8);
+async function syncTime(unix,ppm,tz,opts){
+  /* 原来直接 Number() 就发：输入框填了非数字会得到 NaN，u32le 把 NaN
+     写成 0，设备时间直接跳到 1970-01-01，屏幕从此停在 00:00。
+     ppm/tz 也一律夹到固件接受的范围（rtc.c 的 ±500、console.c 的 -12..14）。 */
+  let u=(unix!==undefined&&unix!==null)?Number(unix):Math.floor(Date.now()/1000);
+  if(!Number.isFinite(u)||u<1000000||u>4102444800)
+    throw new Error('Unix 秒无效（'+unix+'），不发送');
+  u=Math.floor(u);
+  let p=Math.round(Number((ppm!==undefined)?ppm:currentPpm())||0);
+  p=Math.max(-500,Math.min(500,p));
+  let t=Math.round(Number((tz!==undefined)?tz:deviceTz())||0);
+  t=Math.max(-12,Math.min(14,t));
   await sendCmd(CMD.TIME_SET,u,p,t,0,
     '写入时间 unix='+u+' ppm='+p+' tz='+t);
-  log('INFO','HOST','对时完成 '+new Date(u*1000).toLocaleString('zh-CN'));
+  const auto=!(opts&&opts.noAutoCal);
+  log('INFO','HOST','对时完成 '+new Date(u*1000).toLocaleString('zh-CN')+
+      (auto&&acalEnabled()?'，已启动自动走时校正':''));
+  /* 所有对时入口（立即对时 / 同步到设备 / 手动写入 / 连接后自动对时）
+     都从这里走，所以自动校正只需在这一处挂钩。自动写回 ppm 的那次
+     对时传 noAutoCal，由 acalApply 自己重建基准，避免递归。 */
+  if(auto && acalEnabled()) acalArm();
+  else if(auto) acalSetUI('idle');
 }
+/* 没被用户显式改过时，一律沿用设备当前值，绝不拿输入框默认值 0 覆盖。 */
 function currentPpm(){
+  if(S.status && !S.ppmTouched) return S.status.ppm;
   if($('useCalc').checked) return Math.round(Number($('ppmCalc').textContent)||0);
   return Math.round(Number($('ppmManual').value)||0);
+}
+function deviceTz(){
+  if(S.status && !S.tzTouched) return S.status.tz;
+  return Number($('manTz').value||8);
 }
 function calcPpm(){
   const drift=Number($('drift').value)||0;
   const ppm=Math.round(-drift*1000000/86400);
   $('ppmCalc').textContent=Math.max(-500,Math.min(500,ppm));
 }
+
+/* ============================================================ 自动走时校正
+ * 状态帧 0xC1 同时带 unix（整数秒）与 uptime（毫秒）。真机实测
+ *   unix - floor(uptime/1000) == 常数
+ * 因为 unix 是由「毫秒跨整秒」派生的秒事件推进的（port/esl_main_loop.c）。
+ * 于是 devT = unix + (uptime%1000)/1000 就是 1 ms 精度的连续时基，可以
+ * 直接对主机墙钟做最小二乘回归——不必抓秒边沿、不必高频轮询，每 15 s
+ * 一条保活 STATUS 就够，20 min 有 80 点，斜率噪声约 ±25 ppm。
+ *
+ * **静置 30 s 是硬要求**：对时/切页会触发约 6.5 s 的双遍整刷，期间主循环
+ * 被占住、uptime 不推进，紧接测量会得到 -1700 ppm 量级的假值（实测踩过）。
+ *
+ * ppm 是「每秒攒分数、满 1e6 µs 才补 1 秒」的离散补偿（rtc.c advance()），
+ * 范围 ±500；大比例误差写成 ppm 会让屏上「59 秒直接跳 01 秒」，还会吃掉
+ * 整个校准预算。这类误差的根因是 SDK ke_timer 按 30.8 kHz 折算，而各板
+ * 连接态被按 30.8 kHz 折成 ≈94 ms、断开态走真实 32768 ≈100 ms，因此
+ * |drift|>500 ppm 时直接算新折算系数 tick_us = 当前系数 / k，经 0x35
+ * 写进 RTC1，再重新对时建基准继续闭环；ppm 只留给 ±500 以内的残差。
+ * ========================================================================= */
+const ACAL_SETTLE_MS   = 30000;
+const ACAL_BASELINE_US = 93990;   /* 连接态**出厂默认** 93.990 ms/tick，单位 1 µs。
+                                     仅当设备 0xC5 帧回 0（老固件）时才用它兜底；
+                                     设备回过值就一律用设备的值，网页不覆盖。 */
+const ACAL_IDLE_BASELINE_US = 100000; /* 断开态**出厂默认** 100.000 ms/tick。
+                                     实测个体差有几百 ppm（B 机标定到 99.538，
+                                     每天偏差 20 s 量级），必须用 calidle 写进
+                                     设备的 RTC1，不能指望这个默认值。 */
+const ACAL_TICK_MIN_US = 50000;   /* 与固件 console.c 的 TICK_US_MIN/MAX 一致 */
+const ACAL_TICK_MAX_US = 200000;
+/* 台阶容差（秒）：相邻两点的「设备走过 / 主机走过」之差超过它就判为台阶。
+ * 正常 BLE 往返 + 调度抖动 < 0.3 s；补秒是 +1~+2 s（advance 一次跳 N 秒），
+ * 整刷是 -2~-6 s（STATUS 应答被推迟）。取 0.8 s 两头都盖住。 */
+const ACAL_STEP_TOL_S = 0.8;
+const acal = { phase:'idle', base:null, samples:[], settleAt:0,
+               lastDrift:null, lastK:null, note:'', applying:false,
+               lastValid:null };
+
+function acalEnabled(){ return !!$('acalEnable').checked; }
+/* 设备时刻 = unix 秒 + 毫秒小数（uptime%1000 提供，1 ms 精度）。
+ *
+ * 【别改成纯 uptime】ppm 补偿只作用在 unix 的推进上（rtc.c advance() 里
+ * `s_frac += s_ppm`，满 1e6 µs 才多走 1 秒），uptime 完全看不到 ppm 的
+ * 效果。用 uptime 做时基会让「写回 ppm 后再观测」永远读到同一个残差，
+ * 闭环直接失效。
+ *
+ * 代价是补秒时 unix 跳 N 秒而 ms 只走 1 s，devT 出现 +1~+2 s 的台阶。
+ * 那个台阶由 acalOnStatus() 的 ACAL_STEP_TOL_S 检测后剔除，不进回归。 */
+function acalDevT(st){ return st.unix + (st.uptime % 1000) / 1000; }
+function acalSpanMs(){ return acal.base ? Date.now() - acal.base.hostMs : 0; }
+function acalWindowMs(){ return Number($('acalWindow').value || 20) * 60000; }
+
+function acalSetUI(phase,drift,k){
+  const span=acalSpanMs(), win=acalWindowMs();
+  $('acalBar').style.width=(acal.base?Math.min(100,100*span/win).toFixed(1):0)+'%';
+  if(phase==='idle'){
+    $('acalState').textContent='等待对时'; $('acalDrift').textContent='—';
+  }else if(phase==='settling'){
+    $('acalState').textContent='静置避开整刷，还剩 '+
+      Math.max(0,Math.ceil((acal.settleAt-Date.now())/1000))+' s';
+    $('acalDrift').textContent='—';
+  }else if(phase==='observing'){
+    $('acalState').textContent='观测中 '+(span/60000).toFixed(1)+' / '+(win/60000)+
+      ' 分钟 · '+acal.samples.length+' 点';
+    $('acalDrift').textContent=(drift===null||drift===undefined)?'样本不足':
+      (drift>0?'+':'')+drift.toFixed(0)+' ppm'+
+      (k!==undefined&&k!==null?' · 倍率 '+k.toFixed(6):'');
+  }else if(phase==='blocked'||phase==='done'){
+    $('acalState').textContent=acal.note;
+    $('acalDrift').textContent=(phase==='blocked'&&drift!==null&&drift!==undefined)?
+      (drift>0?'+':'')+drift.toFixed(0)+' ppm':'—';
+  }
+  $('btnAcalNow').disabled=!acal.base||acal.samples.length<3||acal.applying;
+  $('btnAcalReset').disabled=acal.phase==='idle';
+}
+/* 每秒只刷新进度文字，不做状态迁移（迁移由 STATUS 帧驱动） */
+function acalTickUI(){
+  if(acal.phase==='settling') acalSetUI('settling');
+  else if(acal.phase==='observing'&&acal.base){
+    $('acalBar').style.width=Math.min(100,100*acalSpanMs()/acalWindowMs()).toFixed(1)+'%';
+    $('acalState').textContent='观测中 '+(acalSpanMs()/60000).toFixed(1)+' / '+
+      (acalWindowMs()/60000)+' 分钟 · '+acal.samples.length+' 点';
+    if(acal.lastDrift!==null) $('acalDrift').textContent=
+      (acal.lastDrift>0?'+':'')+acal.lastDrift.toFixed(0)+' ppm';
+  }
+}
+function acalArm(){
+  acal.base=null; acal.samples=[]; acal.lastDrift=null; acal.lastK=null;
+  acal.lastValid=null;
+  acal.settleAt=Date.now()+ACAL_SETTLE_MS;
+  acal.phase='settling'; acal.note='';
+  log('INFO','CAL','对时成功，静置 30 s 避开整刷后开始观测（窗口 '+
+      Number($('acalWindow').value||20)+' 分钟）');
+  acalSetUI('settling');
+}
+function acalBaseValid(st){
+  const b=acal.base;
+  if(!b) return false;
+  if(!(st.flags&FLAG.RTC)) return false;        /* 断电重启后没对时 */
+  if(st.uptime < b.uptimeMs) return false;      /* uptime 回退 = 重启 */
+  if(st.imageid !== b.imageid) return false;    /* OTA 换固件 */
+  if(st.ppm !== b.ppm) return false;            /* 外部改过 ppm */
+  if(S.settings&&S.settings.tickUs&&
+     S.settings.tickUs!==b.tickUs) return false; /* 外部改过折算系数 */
+  /* 断开态系数被改不影响「连接态」测量的正确性，但说明有人刚动过设备，
+   * 顺手让它重新建基准，省得两次不同批次的数据混在一个回归里。 */
+  if(S.settings&&S.settings.tickIdle&&b.tickIdle&&
+     S.settings.tickIdle!==b.tickIdle) return false;
+  return true;
+}
+/* 最小二乘：ΔdevT 对 Δwall 的斜率 k，drift = (k-1)*1e6 ppm */
+function acalDrift(){
+  const b=acal.base;
+  if(!b||acal.samples.length<3) return {drift:null,k:null,span:acalSpanMs()};
+  let sx=0,sy=0,sxx=0,sxy=0,n=0;
+  for(const s of acal.samples){
+    const x=(s.hostMs-b.hostMs)/1000, y=s.devT-b.devT;
+    sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; ++n;
+  }
+  const den=n*sxx-sx*sx;
+  if(den<=0) return {drift:null,k:null,span:acalSpanMs()};
+  const k=(n*sxy-sx*sy)/den;
+  return {drift:(k-1)*1e6,k,span:acalSpanMs()};
+}
+function acalOnStatus(st){
+  if(!acalEnabled()||acal.applying||S.busy) return;
+  if(acal.phase==='idle'||acal.phase==='blocked'||acal.phase==='done') return;
+  const hostMs=Date.now(), devT=acalDevT(st);
+  if(acal.phase==='settling'){
+    if(hostMs<acal.settleAt) return;
+    acal.base={hostMs,devT,uptimeMs:st.uptime,ppm:st.ppm,imageid:st.imageid,
+               tickUs:(S.settings&&S.settings.tickUs)||ACAL_BASELINE_US,
+               tickIdle:(S.settings&&S.settings.tickIdle)||ACAL_IDLE_BASELINE_US};
+    acal.samples=[{hostMs,devT}];
+    acal.lastValid={hostMs,devT};
+    acal.phase='observing';
+    log('INFO','CAL','基准已建立 unix='+st.unix+' uptime='+st.uptime+' ms ppm='+st.ppm+
+        ' tick='+(acal.base.tickUs/1000).toFixed(3)+' ms');
+    acalSetUI('observing',null);
+    return;
+  }
+  if(acal.phase!=='observing') return;
+  if(!acalBaseValid(st)){
+    log('WARN','CAL','设备重启 / 设置变化，基准重建');
+    acalArm(); return;
+  }
+  /* 台阶检测：**剔除样本，不重建基准**。
+   *
+   * devT = unix + uptime%1000 在两类事件后会跳变，都不是「走时快慢」：
+   *   补秒 —— rtc.c 的 advance(N) 让 unix 一次 +N，而 uptime 只走 1 s，
+   *            devT 出现 +1~+2 s 的正台阶（整刷后必然发生，一天几十次）；
+   *   整刷 —— epd 忙等把主循环占住，STATUS 应答晚 2~6 s 才回来，
+   *            主机侧看到的是负台阶。
+   * 老写法只在 |dd-dw|>5 时才 acalArm() 重建，补秒的 1~2 s 抓不住，
+   * 直接进了最小二乘 —— 20 min 窗口里 1 s 台阶就是 833 ppm 的假斜率，
+   * 足以把折算系数往错的方向推。
+   *
+   * 现在：超过 ACAL_STEP_TOL_S 的点整条丢弃，但**基准点顺延**到本点，
+   * 这样不会把台阶的余量累积到下一个区间，也不必从头再等一个窗口。 */
+  const prev=acal.lastValid;
+  if(prev){
+    const dw=(hostMs-prev.hostMs)/1000, dd=devT-prev.devT;
+    if(dw>0.5 && Math.abs(dd-dw)>ACAL_STEP_TOL_S){
+      log('WARN','CAL','剔除台阶样本：Δdev '+dd.toFixed(2)+' s / Δwall '+
+          dw.toFixed(2)+' s（补秒或整刷），基准点顺延');
+      acal.lastValid={hostMs,devT};
+      return;
+    }
+  }
+  acal.samples.push({hostMs,devT});
+  acal.lastValid={hostMs,devT};
+  const d=acalDrift(); acal.lastDrift=d.drift; acal.lastK=d.k;
+  acalSetUI('observing',d.drift,d.k);
+  if(d.drift!==null && d.span>=acalWindowMs() && acal.samples.length>=6)
+    acalApply(false);
+}
+async function acalApply(force){
+  if(acal.applying||!acal.base) return;
+  const d=acalDrift();
+  if(d.drift===null){ log('WARN','CAL','样本不足（至少 3 点），无法结算'); return; }
+  acal.lastDrift=d.drift; acal.lastK=d.k;
+  if(!force && d.span<acalWindowMs())
+    log('WARN','CAL','观测未满 '+(acalWindowMs()/60000)+' 分钟，结果仅供参考');
+  if(Math.abs(d.drift)>500){
+    /* 大比例偏差不是晶振个体差，是这台板的 tick 折算不对。先复查设备
+       当前系数（可能刚被 CLI 改过），再按实测倍率换算新值：
+         devT/wall = k = tick_old / tick_real  →  tick_new = tick_old / k
+       写进 RTC1 后重新对时建基准，闭环继续收敛。 */
+    acal.applying=true;
+    try{
+      await sendCmd(CMD.SETTINGS,0,0,8,0,'复查设备当前 tick 折算系数');
+      await new Promise(r=>setTimeout(r,120));
+      const oldTick=(S.settings&&S.settings.tickUs)||acal.base.tickUs||ACAL_BASELINE_US;
+      const raw=Math.round(oldTick/d.k);
+      if(raw<ACAL_TICK_MIN_US||raw>ACAL_TICK_MAX_US||raw===oldTick){
+        acal.phase='blocked';
+        acal.note='实测倍率 '+d.k.toFixed(6)+' 推出的系数 '+raw+
+          ' µs/tick 越界或与当前相同，未写入';
+        log('ERROR','CAL',acal.note+'（当前 '+oldTick+' µs/tick，允许 '+
+            ACAL_TICK_MIN_US+'..'+ACAL_TICK_MAX_US+'）');
+        acalSetUI('blocked',d.drift,d.k);
+        return;
+      }
+      const tz=S.status?S.status.tz:undefined;
+      log('WARN','CAL','走时偏差 '+d.drift.toFixed(0)+' ppm（每天 '+
+          (d.drift*0.0864).toFixed(0)+' s）超出 ppm 范围：折算系数 '+
+          (oldTick/1000).toFixed(3)+' → '+(raw/1000).toFixed(3)+' ms/tick');
+      await sendCmd(CMD.TICK_CAL,raw,0,0,0,'写入 tick 折算系数 '+raw+' µs/tick');
+      /* 设备回一条 0xC5，等它落地再让网页上的读数一致 */
+      await new Promise(r=>setTimeout(r,120));
+      await syncTime(undefined,acal.base.ppm,tz,{noAutoCal:true});
+      acalArm();                    /* 重新静置、重建基准，不递归 */
+      acal.note='已写入折算系数 '+(raw/1000).toFixed(3)+' ms/tick，正在重新观测';
+    }catch(e){
+      log('ERROR','CAL','写回折算系数失败：'+e.message);
+      acal.phase='observing';
+    }finally{
+      acal.applying=false;
+      acalSetUI(acal.phase,acal.lastDrift,acal.lastK);
+    }
+    return;
+  }
+  const old=acal.base.ppm;
+  const next=Math.max(-500,Math.min(500,Math.round(old-d.drift)));
+  if(next===old){
+    acal.phase='done';
+    acal.note='已收敛：残差 '+d.drift.toFixed(0)+' ppm，ppm 保持 '+old;
+    log('INFO','CAL','自动校正完成：'+acal.note);
+    acalSetUI('done',d.drift,d.k);
+    return;
+  }
+  acal.applying=true;
+  try{
+    log('INFO','CAL','自动校正：实测 '+d.drift.toFixed(0)+' ppm，ppm '+old+' → '+next+
+        '，重新对时后继续观测');
+    await syncTime(undefined,next,undefined,{noAutoCal:true});
+    acalArm();                      /* 重新静置、重建基准，形成闭环 */
+    acal.note='已写入 ppm='+next+'，正在重新观测';
+  }catch(e){
+    log('ERROR','CAL','写回 ppm 失败：'+e.message);
+    acal.phase='observing';
+  }finally{
+    acal.applying=false;
+    acalSetUI(acal.phase,acal.lastDrift,acal.lastK);
+  }
+}
+
 async function setPage(p){
+  /* 切页会把设备画布整块重画（图片帧只活在画布上，没有独立缓冲），
+     所以网页记的「上一帧」立刻失效 —— XOR 差分从此不可用。 */
+  S.lastFrame=null;
   await sendCmd(CMD.PAGE,0,0,8,p,'切换功能页 -> '+(PAGE_NAME[p]||p));
 }
 async function setUiOpts(){
   let bits=0;
   if($('optInvert').checked) bits|=UI_BIT.INVERT;
   if($('optGrid').checked) bits|=UI_BIT.GRID;
-  if($('optPartial').checked) bits|=UI_BIT.PARTIAL;
+  if($('optHour12').checked) bits|=UI_BIT.HOUR12;
+  if($('optSegFont').checked) bits|=UI_BIT.SEGFONT;
   await sendCmd(CMD.UI_OPTS,0,0,8,bits,'显示选项 0x'+bits.toString(16));
 }
 async function setGaokao(){
   const m=Number($('gkMonth').value),d=Number($('gkDay').value),n=Number($('gkDays').value);
   const a=((m<<16)|(d<<8)|n)>>>0;
   await sendCmd(CMD.GAOKAO,a,0,8,0,'高考日期 '+m+'/'+d+' 连考 '+n+' 天');
+}
+async function setImportant(valid){
+  const m=Number($('impMonth').value),d=Number($('impDay').value);
+  if(valid&&(m<1||m>12||d<1||d>31))
+    throw new Error('重要日月份 1-12、日期 1-31');
+  const a=((m<<16)|(d<<8)|valid)>>>0;
+  await sendCmd(CMD.IMPORTANT,a,0,8,0,
+    valid?('重要日 '+m+'/'+d):'清除重要日');
 }
 
 /* ============================================================ 挪车号码
@@ -1236,7 +1603,16 @@ function regenerate(){
   if(!S.imageBitmap) return;
   const w=Number($('imW').value),h=Number($('imH').value);
   if(!(w>=64&&h>=64&&w<=800&&h<=800)){ log('WARN','HOST','面板尺寸超出范围'); return; }
-  const codec=Number($('imCodec').value),chunk=Number($('imChunk').value);
+  let codec=Number($('imCodec').value);
+  const chunk=Number($('imChunk').value);
+  /* XOR 差分是「相对设备画布上那张图」做异或。画布一旦被切页/重启覆盖，
+     基帧就对不上，解出来是花屏；而设备不会告诉你画布现在是什么。
+     所以只有「本次连接里已经成功推过一张图、且没切过页」才允许 XOR，
+     其余情况强制退回 RLE —— 宁可多传几十字节，也不要一张鬼影图。 */
+  if(codec===2 && !S.lastFrame){
+    log('WARN','HOST','XOR 差分需要设备画布上仍是上一帧（本次还没推成功过 / 中途切过页），已自动改用 RLE');
+    codec=1;
+  }
   const hold=Number($('imHold').value)||0;
   const frame=toFrame(S.imageBitmap,w,h,$('imDither').checked,Number($('imTh').value));
   const r=buildImagePkg(frame,w,h,codec,chunk,hold);
@@ -1298,7 +1674,7 @@ function onImgNotify(ev){
 async function pushImage(){
   if(!S.imagePkg||!S.ready.img||S.busy) return;
   S.busy=true; $('btnPushImg').disabled=true;
-  const chunk=Number($('imChunk').value), win=Number($('imCredit').value);
+  const chunk=Number($('imChunk').value);
   const hold=Number($('imHold').value)||0;
   let pkg=S.imagePkg;
   /* 现场生成的包需要用当前参数刷新 START 里的 chunk / hold */
@@ -1311,8 +1687,8 @@ async function pushImage(){
   $('imBar').parentElement.classList.remove('ok');
   try{
     await S.ch.imgCtrl.writeValueWithResponse(start);
-    log('INFO','IMG','START 已确认，'+chunk+' B/包 × '+win+' 包窗口，共 '+stream.length+' B');
-    let pending=[],off=0,used=chunk;
+    log('INFO','IMG','START 已确认，'+chunk+' B/包 逐包串行，共 '+stream.length+' B');
+    let off=0,used=chunk;
     while(off<stream.length){
       const part=stream.slice(off,Math.min(off+used,stream.length));
       try{ await S.ch.imgData.writeValueWithoutResponse(part); }
@@ -1322,14 +1698,15 @@ async function pushImage(){
         throw e;
       }
       off+=part.length;
-      pending.push(Promise.resolve());
-      if(pending.length>=win){ await Promise.all(pending.splice(0)); }
+      /* 不再搞「信用窗口」：writeValueWithoutResponse 已经逐包 await 到
+         GATT 队列真正接收，再并发只会把 Windows 蓝牙栈的十几格发送槽打满，
+         设备在 flash 忙的时候反而丢包（OTA 那边就踩过，见 pushOta 注释）。
+         限流交给 ATT 层，应用层保持一串到底。 */
       const dt=(performance.now()-t0)/1000;
       $('imBar').style.width=(100*off/stream.length).toFixed(1)+'%';
       $('imProgText').textContent=fmtBytes(off)+' / '+fmtBytes(stream.length);
       $('imRate').textContent=(off/1024/Math.max(dt,.001)).toFixed(1)+' KB/s';
     }
-    await Promise.all(pending);
     await S.ch.imgCtrl.writeValueWithResponse(new Uint8Array([0xA2]));
     const dt=(performance.now()-t0)/1000;
     $('imBar').style.width='100%';
@@ -1337,6 +1714,11 @@ async function pushImage(){
     $('imProgText').textContent='已提交 · '+dt.toFixed(2)+' s';
     log('INFO','IMG','COMMIT 完成，空口 '+dt.toFixed(2)+' s（不含 EPD 刷新）');
     if(S.imageFrame) S.lastFrame=S.imageFrame.slice();
+    /* 设备收到 COMMIT 后**自己**切到图片页并整刷（app.c::img_on_complete），
+       不需要主机再发 0x20 PAGE。这里补一次状态查询只是为了把界面上的
+       页号高亮和「已同步」跟上——整刷要 2 s 左右，等一会儿再读。 */
+    log('INFO','IMG','设备应已自动切到图片页并整刷，约 2 s 后刷新状态');
+    setTimeout(()=>{ refreshStatus().catch(()=>{}); }, 2600);
   }catch(err){
     log('ERROR','IMG','推送失败：'+err.message+'，可尝试降低包长');
     $('imProgText').textContent='推送失败';
@@ -1364,7 +1746,10 @@ function loadOtaFile(file){
       ['物理扇区',ns+' 个 · 传输 '+tx+' B  ('+fmtBytes(tx)+')'],
       ['chunk / imageid',chunk+' B / '+iid],
       ['flags','0x'+flags.toString(16)+'  '+(flags&1?'扇区级差分':'全量')],
-      ['bitmap',Array.from(u.slice(18,18+Math.min(ns,18))).map(x=>x?'1':'.').join('')]
+      /* bitmap 两段拼（与设备端 ota.c 同款）：18..35 前 18 扇区，52..58 后 7 个。
+         只读前 18 个时，19 扇区及以上的包会把尾部几位显示丢。 */
+      ['bitmap',Array.from(u.slice(18,36)).concat(Array.from(u.slice(52,59)))
+        .slice(0,ns).map(x=>x?'1':'.').join('')]
     ].map(r=>'<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>').join('');
     $('btnPushOta').disabled=!S.connected||!S.ready.ota;
     log('INFO','HOST','载入升级包 '+file.name+' · '+fmtBytes(tx)+' / '+ns+' 扇区');
@@ -1373,7 +1758,12 @@ function loadOtaFile(file){
 function onOtaNotify(ev){
   const v=new Uint8Array(ev.target.value.buffer);
   if(v.length<11||v[0]!==0xA1) return;
-  S.otaNtfType=v[1]; S.otaWritten=rd32(v,2);
+  ++S.otaNtfSeq;                       /* 供 pushOta 等「本次 QUERY 的应答」 */
+  S.otaWritten=rd32(v,2); S.otaErr=v[10];
+  /* DONE / ERROR 是终态：COMMIT 之后设备仍可能补发一条迟到的 READY/SECTOR，
+     覆盖掉终态会让主机漏掉 DONE，误报「40 s 没等到 DONE」。 */
+  if(S.otaNtfType===3||S.otaNtfType===4) return;
+  S.otaNtfType=v[1];
   if(v[1]===0) log('DEBUG','OTA','READY，设备已完成擦除');
   else if(v[1]===1) log('DEBUG','OTA','扇区确认，累计 '+S.otaWritten+' B');
   else if(v[1]===3) log('INFO','OTA','DONE，回读 CRC 通过，image header 已写入');
@@ -1381,10 +1771,9 @@ function onOtaNotify(ev){
   else if(v[1]===2) log('WARN','OTA','设备请求重发扇区');
 }
 async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-async function waitFor(fn,ms,label){
-  for(let i=0;i<ms/100;i++){ if(fn()) return true; await sleep(100); }
-  throw new Error('等待超时：'+label);
-}
+/* 注意：OTA 的 START / COMMIT 两段**不用**这个「干等通知」的版本。
+ * 设备侧的 READY / DONE 是在主循环上下文发出的，实机经常收不到，
+ * 干等必然超时并误报失败。那两处改成 QUERY(0x04) 主动轮询。 */
 async function pushOta(){
   if(!S.otaPkg||!S.ready.ota||S.busy) return;
   if(!$('otaConfirm').checked){
@@ -1393,18 +1782,29 @@ async function pushOta(){
   }
   S.busy=true; $('btnPushOta').disabled=true;
   const info=S.otaInfo, body=S.otaPkg.slice(CTRL_LEN);
-  const winBytes=Number($('otaCredit').value)*4096;
-  let chunk=Number($('otaChunk').value),off=0,inflight=0;
-  const t0=performance.now(); S.otaNtfType=-1;
+  let chunk=Number($('otaChunk').value),off=0;
+  const t0=performance.now(); S.otaNtfType=-1; S.otaNtfSeq=0;
   $('otaBar').parentElement.classList.remove('ok');
   try{
     const start=S.otaPkg.slice(0,CTRL_LEN);
     start[13]=chunk&255; start[14]=(chunk>>8)&255;
     await S.ch.otaCtrl.writeValueWithResponse(start);
     $('otaProgText').textContent='设备擦除中…';
-    await waitFor(()=>S.otaNtfType===0||S.otaNtfType===4,8000,'START READY');
-    if(S.otaNtfType===4) throw new Error('设备拒绝 START');
-    log('INFO','OTA','开始传输 '+fmtBytes(body.length)+'，窗口 '+fmtBytes(winBytes));
+    /* 擦除是**分帧**做的（一次推进几个扇区），READY 由主循环上下文发出，
+       实机经常收不到；只等通知会一直等到超时，然后误报「设备拒绝 START」。
+       改成 QUERY(0x04) 主动问：擦除中回 SECTOR，可以收数据了才回 READY。
+       每条应答都是对本次写入的回复，走的是已验证可靠的路径。 */
+    let otaReady=false;
+    for(let dl=performance.now()+45000; performance.now()<dl; ){
+      try{ await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x04])); }
+      catch(e){ throw new Error('START 后链路中断：'+e.message); }
+      if(S.otaNtfType===0){ otaReady=true; break; }
+      if(S.otaNtfType===4)
+        throw new Error('设备拒绝 START（code='+(S.otaErr===undefined?'?':S.otaErr)+'）');
+      await sleep(400);
+    }
+    if(!otaReady) throw new Error('45 s 内没等到 READY（设备擦除未完成）');
+    log('INFO','OTA','开始传输 '+fmtBytes(body.length)+'（逐包带响应写，ATT 层流控）');
     const timer=setInterval(()=>{
       const dt=(performance.now()-t0)/1000;
       $('otaRate').textContent=(off/1024/Math.max(dt,.001)).toFixed(1)+' KB/s';
@@ -1412,34 +1812,70 @@ async function pushOta(){
     try{
       while(off<body.length){
         const part=body.slice(off,Math.min(off+chunk,body.length));
-        try{ await S.ch.otaData.writeValueWithoutResponse(part); }
+        /* 必须是**带响应的写**。OTA_DATA 属性同时开了 WRITE_COMMAND 与
+         * WRITE_REQ；用 WriteWithoutResponse 时 ATT 层没有任何流控，
+         * Windows 蓝牙栈只有十几个发送槽位，设备在 flash 里忙 150 ms
+         * 期间队列就满了，后面的包被**静默丢弃**——浏览器侧每包都"成功"、
+         * 进度条到 100%，设备实际只收到 4 KB，最后以 CRC 失败或 30 s
+         * 空闲断链收场（2026-11-22 A 机网页 OTA 失败现场）。
+         * 带响应写每包等设备处理完回 ATT 响应才发下一包，队列永不溢出；
+         * 这些请求/应答也持续刷新设备的空闲计时器。 */
+        try{ await S.ch.otaData.writeValueWithResponse(part); }
         catch(e){
           if(chunk>182){ chunk=182; log('WARN','OTA','包长降为 182 B'); continue; }
           if(chunk>20){ chunk=20; log('WARN','OTA','包长降为 20 B'); continue; }
           throw e;
         }
-        off+=part.length; inflight+=part.length;
+        off+=part.length;
         $('otaBar').style.width=(100*off/body.length).toFixed(1)+'%';
         $('otaProgText').textContent=fmtBytes(off)+' / '+fmtBytes(body.length);
         if(S.otaNtfType===4) throw new Error('传输中设备报错');
-        /* 信用窗口只用于让出事件循环、刷新 UI 与检查设备错误。
-         * 不能用「等设备扇区 ACK」来释放窗口：ACK 由数据驱动，
-         * 停发数据就永远等不到下一个 ACK，会形成死锁。
-         * 每包 await 失败时 off 不推进，重发同一 part 是安全的
-         * （设备端是纯字节流，包长可变，降级无需通知）。 */
-        if(inflight>=winBytes){ inflight=0; await sleep(0); }
       }
     } finally { clearInterval(timer); }
+    /* COMMIT 之前先核对设备实际落盘字节数。QUERY 在 RECEIVING 状态下回
+       READY，written = 已落盘字节（每满一个 4 KB 扇区累加一次）。这一步
+       把「主机以为发完了」和「设备真收到了」分开：无响应写丢包时进度条
+       照样 100%，过去只能在最后收到一句 CRC 失败，看不出丢在哪。 */
+    $('otaProgText').textContent='核对设备接收字节数…';
+    const seq0=S.otaNtfSeq;
+    await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x04]));
+    for(let i=0;i<20 && S.otaNtfSeq===seq0;i++) await sleep(50);
+    if(S.otaNtfType===4) throw new Error('传输中设备报错（code='+S.otaErr+'）');
+    if(S.otaNtfSeq===seq0)
+      log('WARN','OTA','QUERY 无应答，跳过字节数核对（仍继续 COMMIT）');
+    else if(S.otaWritten < body.length-4096)
+      throw new Error('设备只收到 '+S.otaWritten+' B / 应发 '+body.length+
+                      ' B：主机蓝牙栈丢包，请降低包长重试');
+    else
+      log('INFO','OTA','设备已落盘 '+S.otaWritten+' / '+body.length+' B');
     $('otaProgText').textContent='回读校验中…';
     await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x03]));
-    await waitFor(()=>S.otaNtfType===3||S.otaNtfType===4,12000,'COMMIT DONE');
-    if(S.otaNtfType!==3) throw new Error('CRC 校验失败');
+    /* 回读校验期间设备**一条通知都不发**，DONE 本身也可能丢（主循环上下文
+       发出的通知实机经常收不到）。与 Python 客户端同一套做法：QUERY 轮询，
+       只认 DONE(3) / ERROR(4)，其余（SECTOR/READY）当迟到进度跳过。
+       DONE 后设备约 1 s 自动复位，QUERY 写失败就按「已重启」处理。 */
+    let otaDone=false, otaLinkLost=false;
+    for(let dl=performance.now()+40000; performance.now()<dl; ){
+      if(S.otaNtfType===3){ otaDone=true; break; }
+      if(S.otaNtfType===4)
+        throw new Error('回读校验失败（code='+(S.otaErr===undefined?'?':S.otaErr)+'）');
+      try{ await S.ch.otaCtrl.writeValueWithResponse(new Uint8Array([0x04])); }
+      catch(e){ otaLinkLost=true; break; }
+      await sleep(500);
+    }
+    if(!otaDone && !otaLinkLost) throw new Error('40 s 内没等到 DONE');
     const dt=(performance.now()-t0)/1000;
     $('otaBar').style.width='100%';
     $('otaBar').parentElement.classList.add('ok');
     $('otaProgText').textContent='完成 · '+dt.toFixed(1)+' s';
     $('otaRate').textContent=(body.length/1024/dt).toFixed(1)+' KB/s';
-    log('INFO','OTA','升级完成 '+dt.toFixed(1)+' s，断开并断电重启以启动新 imageid');
+    log('INFO','OTA','升级完成 '+dt.toFixed(1)+' s'+
+        (otaLinkLost
+          ? '（设备已自动复位，链路断开属于正常）'
+          : '，设备约 1 s 后自动复位切到新 bank'));
+    /* 复位会丢软件 RTC，重连后必须重新对时；这里只提示，不自动重连
+       （Web Bluetooth 的 requestDevice 必须由用户手势触发）。 */
+    log('WARN','OTA','复位后软件 RTC 丢失：重连请先点「对时」，否则时钟会停在编译默认时间');
   }catch(err){
     log('ERROR','OTA','升级失败：'+err.message);
     $('otaProgText').textContent='升级失败（旧固件仍可启动）';
@@ -1477,6 +1913,13 @@ function bind(){
 
   /* 总览 */
   $('btnRefresh').onclick=()=>refreshStatus().catch(e=>log('ERROR','HOST',e.message));
+  /* 用户一旦编辑校准输入框就锁定，后续状态帧不再自动回填。 */
+  ['ppmManual','ppmCalc'].forEach(id=>$(id).addEventListener('input',()=>{S.ppmTouched=true;}));
+  $('useCalc').onchange=()=>{S.ppmTouched=true;};
+  $('drift').addEventListener('input',()=>{S.ppmTouched=true;});
+  $('manTz').addEventListener('input',()=>{S.tzTouched=true;});
+  $('manPpm').addEventListener('input',()=>{S.manPpmTouched=true;});
+
   $('btnSyncQuick').onclick=()=>syncTime().catch(e=>log('ERROR','HOST',e.message));
   $('btnPing').onclick=()=>sendCmd(CMD.PING,0,0,8,0,'Ping').catch(e=>log('ERROR','HOST',e.message));
   $('btnReboot').onclick=()=>{
@@ -1485,9 +1928,11 @@ function bind(){
   };
   $$('#pageSeg button').forEach(b=>b.onclick=()=>setPage(Number(b.dataset.p))
     .catch(e=>log('ERROR','HOST',e.message)));
-  ['optInvert','optGrid','optPartial'].forEach(id=>$(id).onchange=()=>setUiOpts()
+  ['optInvert','optGrid','optHour12','optSegFont'].forEach(id=>$(id).onchange=()=>setUiOpts()
     .catch(e=>log('ERROR','HOST',e.message)));
   $('btnGaokao').onclick=()=>setGaokao().catch(e=>log('ERROR','HOST',e.message));
+  $('btnImpSet').onclick=()=>setImportant(1).catch(e=>log('ERROR','HOST',e.message));
+  $('btnImpClear').onclick=()=>setImportant(0).catch(e=>log('ERROR','HOST',e.message));
 
   /* 对时 */
   $('drift').oninput=calcPpm;
@@ -1497,10 +1942,32 @@ function bind(){
     const u=raw?Number(raw):Math.floor(Date.now()/1000);
     const p=Number($('manPpm').value)||0;
     const t=Number($('manTz').value)||8;
-    syncTime(u,p,t).catch(e=>log('ERROR','HOST',e.message));
+    /* 校验在 syncTime() 里统一做（它会抛错）；这里只把用户输入的原文
+       传下去，报错时能看见自己填了什么。 */
+    syncTime(raw?u:undefined,p,t).catch(e=>log('ERROR','HOST',e.message));
   };
   $('btnTimeQuery').onclick=()=>sendCmd(CMD.TIME_QUERY,0,0,8,0,'读取设备时间')
     .catch(e=>log('ERROR','HOST',e.message));
+
+  /* 自动走时校正 */
+  $('acalEnable').onchange=()=>{
+    if(!acalEnabled()){
+      acal.phase='idle'; acal.base=null; acal.samples=[];
+      acal.lastDrift=null; acal.lastK=null;
+      acalSetUI('idle');
+      log('INFO','CAL','自动走时校正已关闭');
+    }else if(S.connected&&S.ready.con){
+      log('INFO','CAL','自动走时校正已开启，等待下一次对时建立基准');
+    }
+  };
+  $('acalWindow').onchange=()=>{
+    if(acal.phase==='observing'&&acal.base) acalSetUI('observing',acal.lastDrift,acal.lastK);
+  };
+  $('btnAcalNow').onclick=()=>acalApply(true).catch(e=>log('ERROR','CAL',e.message));
+  $('btnAcalReset').onclick=()=>{
+    acalArm();
+    if(S.connected&&S.ready.con) sendCmd(CMD.STATUS).catch(()=>{});
+  };
 
   /* 挪车号码 */
   $('parkPhone').oninput=updatePhonePreview;
@@ -1522,7 +1989,11 @@ function bind(){
   });
   $('btnRecalc').onclick=regenerate;
   $('btnPushImg').onclick=pushImage;
-  $('btnResumeClock').onclick=()=>setPage(2).catch(e=>log('ERROR','HOST',e.message));
+  /* 必须指向 console.h 的 ESL_CON_PAGE_DEFAULT（当前=1 时钟）。
+     以前硬编码 2（万年历），默认页改成时钟后这个按钮会把设备切到非默认页，
+     推图回来画面与设备开机页不一致，看起来就像「切页没生效」。
+     check_protocols.py 会把这个数字与 C 头比对，别单独改一处。 */
+  $('btnResumeClock').onclick=()=>setPage(1).catch(e=>log('ERROR','HOST',e.message));
   $('btnAbortImg').onclick=async()=>{
     try{ await S.ch.imgCtrl.writeValueWithResponse(new Uint8Array([0xA3]));
          log('WARN','IMG','已发送 ABORT'); }catch(e){ log('ERROR','IMG',e.message); }
@@ -1548,7 +2019,7 @@ function init(){
   if(!navigator.bluetooth) $('secureNotice').style.display='block';
   if(localStorage.getItem('esl-theme')==='dark')
     document.documentElement.dataset.theme='dark';
-  buildUuidTable(); bind(); calcPpm(); updateSvcPill(); renderLogTable();
+  bind(); calcPpm(); updateSvcPill(); renderLogTable(); acalSetUI('idle');
   /* 号码记在浏览器里：设备没接 flash 时，靠每次连接自动补写保号。 */
   const remembered=localStorage.getItem(PHONE_STORE)||'';
   if(remembered) $('parkPhone').value=formatPhone(remembered);
@@ -1560,9 +2031,10 @@ function init(){
       {year:'numeric',month:'long',day:'numeric',weekday:'long'});
     $('hostUnix').textContent=Math.floor(d.getTime()/1000);
     $('hostTz').textContent='UTC'+(-d.getTimezoneOffset()/60>=0?'+':'')+(-d.getTimezoneOffset()/60);
+    acalTickUI();
   };
   tick(); setInterval(tick,1000);
-  log('INFO','HOST','ESL Studio 已就绪，等待连接设备');
+  log('INFO','HOST','WUZHOU.XYZ FMW 已就绪，等待连接设备');
   if(!navigator.bluetooth) log('ERROR','HOST','当前环境不支持 Web Bluetooth（需 localhost / HTTPS）');
   else log('DEBUG','HOST','Web Bluetooth 可用；连接前请确认价签已上电并广播');
 }

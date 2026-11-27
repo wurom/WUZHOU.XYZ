@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>电子价签固件</title>
+    <title>电子价签固件 · 墨水屏时钟 / 万年历 / 挪车牌</title>
     <meta name="viewport" content="width=device-width">
-    <meta name="keywords" content="电子价签固件,墨水屏时钟,墨水屏万年历,墨水屏固件" />
-    <meta name="description" content="电子价签墨水屏固件，配 Web 蓝牙工具控制。" />
+    <meta name="keywords" content="电子价签固件,墨水屏时钟,墨水屏万年历,墨水屏固件,墨水屏挪车牌,DA14585,IL3897" />
+    <meta name="description" content="HM2.13 电子墨水屏固件：DA14585 + IL3897 2.13 英寸屏，六个功能页（时钟/万年历/图片/倒计时/挪车联系/设备信息），农历节气节日、蓝牙对时、手机推图、双 bank 差分 OTA，配套 Web 蓝牙工具无需装 App。" />
     <link rel="shortcut icon" href="../wufiles/favicon.ico">
     <link href="../wufiles/styles.css" rel="stylesheet">
     <link rel="stylesheet" href="../wufiles/fonts/font-awesome.min.css">
@@ -22,13 +22,13 @@
   .logo {
     width:84px; height:84px; border-radius:18px; background:rgba(255,255,255,.18);
     display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:700;
-    border:2px dashed rgba(255,255,255,.6);
+    border:2px dashed rgba(255,255,255,.6); text-align:center; line-height:1.15;
   }
   .hero h1 { font-size:30px; font-weight:700;color:#fff; }
   .hero p { margin-top:6px; opacity:.92; font-size:15px; }
-  .body { padding: 32px 40px; }
   .section-title { font-size:18px; font-weight:700; margin:8px 0 14px; color:#1f2329; }
   .desc { font-size:15px; line-height:1.9; color:#3a4250; margin-bottom:26px; }
+  .desc b { color:#1f4fd6; }
   .features { display:flex; gap:14px; margin-bottom:28px; flex-wrap:wrap; }
   .card {
     flex:1; min-width:200px; border:1px solid #e6e9ef; border-radius:12px; padding:16px;
@@ -37,24 +37,73 @@
   .card .ic { font-size:24px; }
   .card h3 { font-size:15px; margin:8px 0 6px; }
   .card p { font-size:13px; color:#6b7280; line-height:1.6; }
-  .support {
-    border:1px solid #d9e6ff; background:#f3f8ff; border-radius:14px; padding:22px 24px;
-    display:flex; align-items:center; gap:22px;
-  }
+  .dl-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
   .dl-card {
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-    border:1px solid #e6e9ef; border-radius:12px; padding:16px 18px; background:#f8fafc;
+    display:flex; flex-direction:column; gap:10px;
+    border:1px solid #e6e9ef; border-radius:12px; padding:18px; background:#f8fafc;
   }
   .dl-info { min-width:0; }
-  .dl-name { font-size:16px; font-weight:700; color:#1f2329; }
-  .dl-meta { margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+  .dl-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .dl-name { font-size:15.5px; font-weight:700; color:#1f2329; }
+  .dl-kind {
+    font-size:11px; font-weight:700; color:#1f4fd6; background:#e8f0ff;
+    padding:2px 9px; border-radius:20px; white-space:nowrap;
+  }
+  .dl-kind.alt { color:#0f766e; background:#e6f5f2; }
+  .dl-desc { font-size:12.8px; color:#6b7280; line-height:1.7; margin:0; flex:1; }
+  .dl-desc a { color:#1f4fd6; text-decoration:none; }
+  .dl-desc a:hover { text-decoration:underline; }
+  .dl-meta { margin-top:2px; display:flex; gap:8px; flex-wrap:wrap; }
   .dl-tag { font-size:12px; color:#5b6573; background:#eef3ff; padding:3px 10px; border-radius:20px; }
+  .dl-tag a { color:#1f4fd6; text-decoration:none; }
   .dl-btn {
-    flex:0 0 auto; display:inline-flex; align-items:center; gap:6px;
+    align-self:flex-start; display:inline-flex; align-items:center; gap:6px; margin-top:4px;
     background:#1f4fd6; color:#fff; font-size:14px; font-weight:600; text-decoration:none;
     padding:10px 18px; border-radius:10px; transition:.15s;
   }
   .dl-btn:hover { background:#1740b8; }
+  .dl-btn.alt { background:#0f766e; }
+  .dl-btn.alt:hover { background:#0b5c55; }
+  .dl-file { font-size:11.5px; color:#9aa3af; font-family:ui-monospace,Consolas,Menlo,monospace; }
+
+  /* 功能页 / 规格表 */
+  .tbl { width:100%; border-collapse:collapse; margin-bottom:14px; font-size:13.5px; }
+  .tbl th, .tbl td { text-align:left; padding:10px 12px; border-bottom:1px solid #eef1f5; vertical-align:top; }
+  .tbl thead th { background:#f3f6fb; color:#3a4250; font-weight:700; font-size:13px; }
+  .tbl tbody tr:nth-child(even) { background:#fbfcfe; }
+  .tbl td.no { width:44px; color:#1f4fd6; font-weight:700; white-space:nowrap; }
+  .tbl td.name { width:118px; font-weight:600; color:#1f2329; white-space:nowrap; }
+  .tbl td.k { width:150px; color:#5b6573; white-space:nowrap; }
+  .tbl code, .step code { background:#eef1f5; color:#3a4250; font-size:12px;
+    padding:1px 5px; border-radius:4px; font-family:ui-monospace,Consolas,Menlo,monospace; }
+  .note { font-size:12.5px; color:#8a93a0; line-height:1.7; margin:-4px 0 26px; }
+
+  /* 上手步骤 */
+  .steps { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .step {
+    flex:1; min-width:210px; border:1px solid #e6e9ef; border-radius:12px;
+    padding:16px 16px 14px; background:#fff; position:relative;
+  }
+  .step .n {
+    width:24px; height:24px; border-radius:50%; background:#1f4fd6; color:#fff;
+    font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  .step h4 { font-size:14px; margin:10px 0 6px; color:#1f2329; }
+  .step p { font-size:13px; color:#6b7280; line-height:1.65; margin:0; }
+
+  @media (max-width:720px) {
+    .hero { padding:24px 20px; gap:14px; }
+    .logo { width:64px; height:64px; font-size:19px; border-radius:14px; }
+    .hero h1 { font-size:21px; }
+    .hero p { font-size:13px; }
+    .section-title { font-size:16px; }
+    .desc { font-size:14px; }
+    .tbl { font-size:12.5px; }
+    .tbl th, .tbl td { padding:8px 9px; }
+    .tbl td.k { width:110px; }
+    .tbl td.name { white-space:normal; }
+    .dl-grid { grid-template-columns:1fr; }
+  }
 </style>
  
   </head>
@@ -71,50 +120,197 @@
     <div class="hero">
       <div class="logo">HM<br>价签</div>
       <div>
-        <h1>HM2.13 电子价签固件</h1>
-        <p>跑在 DA14585 + IL3897 上的2.13″ 墨水屏固件，配 Web 蓝牙工具控制</p>
+        <h1>HM2.13 电子墨水屏固件</h1>
+        <p>跑在 DA14585 + IL3897 上的 2.13″ 墨水屏固件，配 Web 蓝牙工具控制</p>
       </div>
     </div>
 </div>
 <div class="entry clearfix">
       <div class="section-title">软件简介</div>
       <div class="desc">
-        本电子价签（电子墨水屏）固件运行于 DA14585 微控制器，
-        驱动 2.13 英寸低功耗墨水屏。软件可免费下载使用，提供设备信息、时钟、万年历、
-        图片推送、倒计时、挪车联系等多个可视化功能页，并配套基于<a href="da14585.html"> Web Bluetooth 的手机
-        控制工具（console / 推图 / OTA）</a>。本项目支持双 bank 差分高速
-        OTA 升级；用户可通过页面内的"赞赏"自愿支持开发者持续维护与迭代。
+        一套跑在 DA14585 上的低功耗电子墨水屏固件，驱动 2.13 英寸墨水屏：
+        <b>设备信息 / 时钟 / 万年历 / 图片 / 倒计时 / 挪车联系</b>六个功能页，外加一个升级时自动切入的
+        OTA 系统页。农历、天干地支、二十四节气、节日自动计算，蓝牙对时，
+        手机推图，上位机随时改写挪车号码，双 bank 差分 OTA 在线升级。
+        配套 <a href="da14585.html">Web Bluetooth 网页工具</a>，手机或电脑开浏览器就能连，
+        不需要装 App。
       </div>	
+
+      <div class="section-title">功能页一览</div>
+      <table class="tbl">
+        <thead>
+          <tr><th>页</th><th>名称</th><th>屏上内容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="no">0</td>
+            <td class="name">设备信息</td>
+            <td>整页左右分栏：左栏固件版本 / 面板尺寸 / 主控型号 / 对时状态，右栏一张 84×84 微信赞赏码。静态页，切页、对时、跨天才重排。</td>
+          </tr>
+          <tr>
+            <td class="no">1</td>
+            <td class="name">时钟（默认首屏）</td>
+            <td>大号 <code>HH:MM</code>（默认 Inter Bold 位图，可切七段数码管）+ 公历日期星期 + 农历干支节气节日 + 右上角电量 + 底部高考条。分钟变化只局部刷新，整点补一次整刷清鬼影。</td>
+          </tr>
+          <tr>
+            <td class="no">2</td>
+            <td class="name">万年历</td>
+            <td>整月网格 + 星期表头 + 今日反白，右侧超大日期与农历、节气、高考信息。</td>
+          </tr>
+          <tr>
+            <td class="no">3</td>
+            <td class="name">图片</td>
+            <td>手机推送的 1bpp 位图整屏显示，可带 <code>hold</code> 秒数自动回默认页；没推过图时显示「扫一扫 加入交流群」的入群码。</td>
+          </tr>
+          <tr>
+            <td class="no">4</td>
+            <td class="name">倒计时</td>
+            <td>整屏超大天数 + 黑底标签，配生肖、农历与节气，顶行带当前时间。适合高考、纪念日、项目节点。</td>
+          </tr>
+          <tr>
+            <td class="no">5</td>
+            <td class="name">挪车联系</td>
+            <td>整屏三行：标题条 / 双线大号号码牌 / 「临时停靠 请多关照」。11 位手机号自动排成 <code>138 0013 8000</code>，号码经上位机改写。</td>
+          </tr>
+          <tr>
+            <td class="no">6</td>
+            <td class="name">OTA（系统页）</td>
+            <td>升级时自动切入，显示状态词（接收 / 校验 / 完成 / 失败）、百分比与已收数据量。不接受手动切页。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">页号 0–5 可随时切换，6 号由升级状态机占用；页号即网页工具里按钮的顺序，两边共用一张协议表。</div>
+
       <div class="section-title">主要功能</div>
       <div class="features">
         <div class="card">
           <div class="ic">⏰</div>
           <h3>时钟与万年历</h3>
-          <p>公历 + 农历 + 24 节气 + 节日显示，蓝牙对时，外部晶振低功耗走时（约 ±5 秒/天）。</p>
+          <p>公历 + 农历 + 干支 + 二十四节气 + 节日，全部本地计算不联网。外部 32.768 kHz 晶振走时，连接态 / 断开态两套折算系数分别标定，另带 ±500 ppm 微调。</p>
+        </div>
+        <div class="card">
+          <div class="ic">🗓️</div>
+          <h3>倒计时与重要日</h3>
+          <p>高考日期与「重要日」都能由上位机写入，掉电不丢；时钟页底部常驻一条天数提示，倒计时页整屏放大显示。</p>
         </div>
         <div class="card">
           <div class="ic">📷</div>
           <h3>手机推图</h3>
-          <p>通过 Web 蓝牙把任意 1bpp 图片整屏推送到墨水屏显示，可设定自动回默认页。</p>
+          <p>Web 蓝牙推送任意 1bpp 位图，支持 RAW / RLE / XOR-RLE 三种编码，边收边解不占内存，CRC32 不符不会把半张图刷上屏。</p>
         </div>
         <div class="card">
           <div class="ic">🚗</div>
           <h3>挪车联系</h3>
-          <p>可经上位机随时改写的挪车号码告示页，号码掉电可选持久化。</p>
+          <p>号码可随时用手机改写、屏上即时预览，可选择掉电持久化。输入可以带空格、横线、括号，设备统一归一化；没写号码就显示「号码未设置」。</p>
         </div>
       </div>
+      <div class="features">
+        <div class="card">
+          <div class="ic">🔄</div>
+          <h3>双 bank 差分 OTA</h3>
+          <p>只写非运行中的 bank，按 4 KB 扇区位图差分传输，未改动的扇区在设备本地复制不过射频。COMMIT 前不改目标 bank 头，中途断电仍启动旧固件。</p>
+        </div>
+        <div class="card">
+          <div class="ic">🎛️</div>
+          <h3>显示选项</h3>
+          <p>反色、月历网格、12 / 24 小时制、七段数码管字体四项开关，写入后掉电保留；网页连上会回读设备真实状态，不会「网页勾着、屏上另一种」。</p>
+        </div>
+        <div class="card">
+          <div class="ic">💾</div>
+          <h3>掉电保存</h3>
+          <p>当前页面、重要日、显示选项、挪车号码、走时系数与时区分别落在独立记录扇区，各自带 CRC 校验（走时记录三份冗余），升级回退也不丢校准。</p>
+        </div>
+        <div class="card">
+          <div class="ic">🩺</div>
+          <h3>自诊断</h3>
+          <p>硬件看门狗防卡死，复位归因黑匣子区分「主动复位 / 看门狗 / 断电」，接线自检位一眼看出哪项功能没接上，日志事件从状态通道实时上报。</p>
+        </div>
+      </div>
+
+      <div class="section-title">技术规格</div>
+      <table class="tbl">
+        <tbody>
+          <tr><td class="k">主控</td><td>Renesas / Dialog DA14585（Cortex-M0，96 KB SysRAM），SDK6 6.0.22</td></tr>
+          <tr><td class="k">存储</td><td>512 KB SPI flash，双 bank 布局，升级只写非运行 bank</td></tr>
+          <tr><td class="k">面板</td><td>HINK-E0213A41-FPC（IL3897）104×212 物理 / 212×104 横屏；兼容 OPM021B1（IL3895 / SSD1673A）122×250，按 flash 里的板级记录自动切换</td></tr>
+          <tr><td class="k">刷新策略</td><td>分钟变化局部刷新；切页、跨天、对时、升级结果走双遍整刷；周期性整刷只在时钟页的整点发生</td></tr>
+          <tr><td class="k">走时</td><td>外部 32.768 kHz 晶振，晶振精度约 ±20 ppm（≈1.7 秒/天），配套工具可逐板标定到 10 ppm 级；系数与时区掉电保存</td></tr>
+          <tr><td class="k">蓝牙</td><td>一个自定义 GATT 服务，7 条特征分管 升级 / 图像 / 状态 / 对时 / 命令；广播名 <code>WZHM213_XXXX</code>（MAC 后四位），多台同款可区分</td></tr>
+          <tr><td class="k">固件体积</td><td>当前构建 75 180 B（约 74 KB），占 19 个 4 KB 扇区，协议上限 25 扇区仍有余量</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">三分钟上手</div>
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <h4>连上设备</h4>
+          <p>用 Chrome / Edge 打开<a href="da14585.html">网页工具</a>，点「连接」选中 <code>WZHM213_XXXX</code>。无需安装 App、无需注册。</p>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h4>对时</h4>
+          <p>点「对时」写入当前时间；勾选「自动校正走时误差」后，工具会静置采样并用回归算出本机系数写回设备。</p>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h4>选页 / 推图 / 升级</h4>
+          <p>六个功能页一键切换；图片页推 1bpp 位图；OTA 页选固件包即可在线升级，失败可回退。</p>
+        </div>
+      </div>
+      <div class="note">
+        Web Bluetooth 需要 Chrome、Edge 或安卓 Chrome；iOS / Safari 不支持，请用安卓手机或电脑操作。
+        OTA 期间请勿断电——即便断电，设备也只会继续运行旧固件。
+      </div>
+
       <div class="section-title">固件下载</div>
-      <div class="dl-card">
-        <div class="dl-info">
-          <div class="dl-name">HM2.13 固件（DA14585）</div>
-          <div class="dl-meta">
-            <span class="dl-tag">编译时间 2026-11-10</span>
-            <span class="dl-tag">2.13″ 墨水屏</span>
-            <span class="dl-tag"><a href="da14585.html">网页工具</a></span>
+      <div class="dl-grid">
+        <div class="dl-card">
+          <div class="dl-info">
+            <div class="dl-head">
+              <span class="dl-name">HM2.13 整片固件</span>
+              <span class="dl-kind">整片镜像</span>
+            </div>
           </div>
+          <p class="dl-desc">
+            512 KB 完整 flash 镜像，含原厂 bootloader、产品头与双 bank 布局，应用写在 bank1、
+            bank2 保留原厂内容。用于首次烧录、换板，或设备不广播、连不上时的恢复；
+            需要用 SWD / 烧录器整片写入，不走蓝牙。
+          </p>
+          <div class="dl-meta">
+            <span class="dl-tag">512 KB · 整片</span>
+            <span class="dl-tag">含 bootloader</span>
+            <span class="dl-tag">更新于 2026-11</span>
+          </div>
+          <a class="dl-btn" href="HM2.13_v1.0.0_full.bin" download>⬇ 下载整片镜像</a>
+          <div class="dl-file">HM2.13_v1.0.0_full.bin</div>
         </div>
-        <a class="dl-btn" href="HM2.13_v1.0.0.bin" download>⬇ 下载固件</a>
+        <div class="dl-card">
+          <div class="dl-info">
+            <div class="dl-head">
+              <span class="dl-name">HM2.13 OTA 升级包</span>
+              <span class="dl-kind alt">OTA 固件</span>
+            </div>
+          </div>
+          <p class="dl-desc">
+            只含应用层，19 个 4 KB 扇区、约 76 KB。用<a href="da14585.html">网页工具</a>的 OTA 页
+            或命令行经蓝牙写入非运行 bank，不动 bootloader 与正在运行的固件；中途断电仍启动旧版本。
+            日常升级用这个，不用拆机、不用接线。
+          </p>
+          <div class="dl-meta">
+            <span class="dl-tag">76 KB · 19 扇区</span>
+            <span class="dl-tag">蓝牙推送</span>
+            <span class="dl-tag">更新于 2026-11</span>
+          </div>
+          <a class="dl-btn alt" href="HM2.13_v1.0.0_ota.eslota" download>⬇ 下载 OTA 包</a>
+          <div class="dl-file">HM2.13_v1.0.0_ota.eslota</div>
+        </div>
       </div>
+      <div class="note">
+        怎么选：设备还是原厂固件、连不上蓝牙、或换过 flash —— 用<b>整片镜像</b>（需烧录器）；
+        已经在本项目固件上正常使用的设备 —— 用 <b>OTA 包</b>（需配网页工具或上位机，不能直接烧进芯片）。
+      </div>
+
       
 </div>
 
@@ -122,13 +318,14 @@
     <div class="hero">
       <div class="logo">BLOZI<br>价签</div>
       <div>
-        <h1>BLOZI 4.2电子价签固件</h1>
+        <h1>BLOZI 4.2 电子价签固件</h1>
         <p>跑在 TLSR8359 + SSD1683 上的 4.2″ 墨水屏固件，配 Web 蓝牙工具控制</p>
       </div>
     </div>
 </div>
 <div class="entry clearfix">
-      <div class="section-title">固件更新中...</div>
+      <div class="section-title">固件更新中…</div>
+      <div class="desc">该机型固件正在整理与验证，完成后会在此页放出下载与功能说明。</div>
 </div>      
       
 <p>&#169;2021–<script>document.write((new Date()).getFullYear());</script> by Joe</p>
