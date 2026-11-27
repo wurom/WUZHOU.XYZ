@@ -4,6 +4,8 @@ var labels =	[{"id":"b","label":"推荐"},{"id":1,"label":"软件"},{"id":2,"lab
  {"id":"f","label":"SDR"},{"id":"g","label":"蓝牙"}];
 //数据库
 var datalist = [
+{"id":17,"label":"1b","title":"电子价签固件","url":"epd/wzfmw.html","pic":"epd.png","time":"2026-11-27",
+	"resume":"电子价签（电子墨水屏）固件提供设备信息、时钟、万年历、 图片显示、倒计时、挪车联系等多个可视化功能页。"},
 
 {"id":16,"label":"3478c","title":"ESP-01和ESP-01S模块","url":"mcu/esp-01s.html","pic":"wuroom.png","time":"2021-12-01",
 	"resume":"基于ESP8266芯片开发，模组集成了透传功能，支持串口AT指令集。"},
